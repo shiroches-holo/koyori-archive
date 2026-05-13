@@ -4,12 +4,21 @@
   <meta charset="UTF-8">
   <title>こよちゃん配信一覧</title>
 
-  <style>
+<style>
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
   .time-cell {
     text-align: right;
     white-space: nowrap;
   }
-  </style>
+
+  .check-cell {
+    text-align: center;
+  }
+</style>
 </head>
 <body>
   <h1>博衣こより 配信アーカイブ</h1>
@@ -40,9 +49,9 @@ function formatDate(dateStr) {
   const m = d.getMonth() + 1;
   const day = d.getDate();
   const h = d.getHours();
-  const min = d.getMinutes();
+  const min = d.getMinutes().toString().padStart(2, '0');
 
-  return `${y}/${m}/${day} ${h}時${min.toString().padStart(2, '0')}分`;
+  return `${y}/${m}/${day} ${h}:${min}`;
 }
 
 // 再生時間フォーマット
@@ -70,15 +79,16 @@ fetch(url)
     
       const tr = document.createElement("tr");
     
-      tr.innerHTML = `
-        <td>${formatDate(item.date)}</td>
-        <td>${link}${item.title}</a></td>
-        <td class="time-cell">
-          ${formatDuration(item.seconds)}
-        </td>
-        </td><input type="checkbox" data-id="${item.videoId}"></td>
-        <td>${item.playlist}</td>
-      `;
+
+    tr.innerHTML = `
+      <td>${formatDate(item.date)}</td>
+      <td><a href="${link}" target="_blank">${item.title}</a></td>
+      <td class="time-cell">${formatDuration(item.seconds)}</td>
+      <td class="check-cell">
+        <input type="checkbox">
+      </td>
+      <td>${item.playlist}</td>
+    `;
     
       const checkbox = tr.querySelector("input");
       const key = item.videoId;
