@@ -7,19 +7,51 @@
 <body>
   <h1>博衣こより 配信アーカイブ</h1>
 
-  <p>配信一覧（テスト）</p>
+  <p>配信一覧（自動取得）</p>
 
-  <ul>
-    <li><a href="https://www.youtube.com/watch?v=pmFbqPRFz_8" target="_blank">
-      【MV】ルマ / 博衣こより cover
-    </a></li>
+  <table border="1" id="list">
+    <thead>
+      <tr>
+        <th>日付</th>
+        <th>タイトル</th>
+        <th>URL</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <li><a href="https://www.youtube.com/watch?v=r3Ba-2Y5HDY" target="_blank">
-      初配信！
-    </a></li>
-  </ul>
+<script>
+const url = "https://docs.google.com/spreadsheets/d/1SAclNEE_Grq8gFozc8evWujZQ_r9L5S0Mw5YUxrPP-E/gviz/tq?tqx=out:csv";
 
-  <p>※今後ここに一覧を追加していく予定</p>
+fetch(url)
+  .then(response => response.text())
+  .then(data => {
+    const rows = data.split("\n").slice(1); // 1行目はヘッダー
+
+    const tbody = document.querySelector("#list tbody");
+
+    rows.forEach(row => {
+      const cols = row.split(",");
+
+      if (cols.length > 2) {
+        const tr = document.createElement("tr");
+
+        const date = cols[0];
+        const title = cols[1];
+        const videoId = cols[2];
+
+        const link = "https://www.youtube.com/watch?v=" + videoId;
+
+        tr.innerHTML = `
+          <td>${date}</td>
+          <td>${title}</td>
+          <td><a href="${link}" target   `;
+
+        tbody.appendChild(tr);
+      }
+    });
+  });
+</script>
 
 </body>
 </html>
