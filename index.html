@@ -65,10 +65,10 @@ fetch(url)
       tr.innerHTML = `
         <td>${formatDate(item.date)}</td>
         <td><a href="${link}" target="_blank">${item.title}</a></td>
-        <td>${item.playlist}</td>
         <td>${formatDuration(item.seconds)}</td>
-      ;
-
+        <td>${item.playlist}</td>
+      `;
+      
       tbody.appendChild(tr);
     });
   });
