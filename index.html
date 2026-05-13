@@ -190,8 +190,7 @@ function render(){
 
   <!--
   const limit = 100;
-  filtered = filtered.slice(0, limit);
-  -->
+  filtered = filtered.slice(0, limit);  -->
 
   if(sort==="new") filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
   if(sort==="old") filtered.sort((a,b)=>new Date(a.date)-new Date(b.date));
