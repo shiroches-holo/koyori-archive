@@ -231,9 +231,6 @@ fetch(url)
     document.getElementById("sort").addEventListener("change", render);
     document.getElementById("playlistFilter").addEventListener("change", render);
     document.getElementById("checkAll").addEventListener("click", ()=>{
-    document.querySelectorAll("#list tbody input").forEach(cb=>{
-      cb.checked = true;
-      localStorage.setItem(cb.closest("tr").dataset.id, true);
     });
     render();
     });
@@ -241,7 +238,9 @@ fetch(url)
     document.getElementById("checkAll").addEventListener("click", ()=>{
     document.querySelectorAll("#list tbody tr").forEach(tr=>{
       const id = tr.dataset.id;
-      localStorage.setItem(id, true);
+        if(id){
+        localStorage.setItem(id, true);
+        }
     });
     render();
     });
