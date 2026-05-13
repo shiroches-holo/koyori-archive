@@ -22,6 +22,7 @@
         <th>公開日</th>
         <th>タイトル</th>
         <th>時間</th>
+        <th>視聴済み</th>
         <th>再生リスト</th>
       </tr>
     </thead>
@@ -66,21 +67,35 @@ fetch(url)
 
     data.forEach(item => {
       const link = "https://www.youtube.com/watch?v=" + item.videoId;
-
+    
       const tr = document.createElement("tr");
-
+    
       tr.innerHTML = `
         <td>${formatDate(item.date)}</td>
-        <td><a href="${link}" target="_blank">${item.title}</a></td>
+        <td>${link}${item.title}</a></td>
         <td class="time-cell">
           ${formatDuration(item.seconds)}
-          <input type="checkbox">
         </td>
+        </td><input type="checkbox" data-id="${item.videoId}"></td>
         <td>${item.playlist}</td>
       `;
-      
+    
+      const checkbox = tr.querySelector("input");
+      const key = item.videoId;
+    
+      // 保存状態を復元
+      if (localStorage.getItem(key) === "true") {
+        checkbox.checked = true;
+      }
+    
+      // 状態変更時に保存
+      checkbox.addEventListener("change", () => {
+        localStorage.setItem(key, checkbox.checked);
+      });
+    
       tbody.appendChild(tr);
     });
+    
   });
 </script>
 
