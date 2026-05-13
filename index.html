@@ -20,6 +20,11 @@
   }
 </style>
 </head>
+<div id="stats">
+  <p>総動画：0本 / 0時間</p>
+  <p>視聴済：0本 / 0時間</p>
+  <p>視聴率：0%</p>
+</div>
 <body>
   <h1>博衣こより 配信アーカイブ</h1>
 
@@ -41,27 +46,19 @@
 <script>
 const url = "https://script.google.com/macros/s/AKfycbzLNPVR28em6L534Lk6FB9yKSJmAtkhJKqX6aFwREIgTtsKyCNPAcIZfeUoTsuUpKrkPA/exec";
 
-// 日付フォーマット
+// 日付
 function formatDate(dateStr) {
   const d = new Date(dateStr);
-
-  const y = d.getFullYear();
-  const m = d.getMonth() + 1;
-  const day = d.getDate();
-  const h = d.getHours();
-  const min = d.getMinutes().toString().padStart(2, '0');
-
-  return `${y}/${m}/${day} ${h}:${min}`;
+  return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${d.getMinutes().toString().padStart(2,'0')}`;
 }
 
-// 再生時間フォーマット
+// 時間
 function formatDuration(seconds) {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
 
   let result = "";
-
   if (h > 0) result += `${h}時間`;
   if (m > 0) result += `${m}分`;
   if (s > 0) result += `${s}秒`;
@@ -69,43 +66,70 @@ function formatDuration(seconds) {
   return result || "0秒";
 }
 
+// 合計時間
+function formatTotal(seconds) {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  return `${h}時間${m}分`;
+}
+
 fetch(url)
   .then(res => res.json())
   .then(data => {
     const tbody = document.querySelector("#list tbody");
 
-    data.forEach(item => {
-      const link = "https://www.youtube.com/watch?v=" + item.videoId;
-    
-      const tr = document.createElement("tr");
-    
+    let totalCount = data.length;
+    let totalSeconds = 0;
 
-    tr.innerHTML = `
-      <td>${formatDate(item.date)}</td>
-      <td><a href="${link}" target="_blank">${item.title}</a></td>
-      <td class="time-cell">${formatDuration(item.seconds)}</td>
-      <td class="check-cell">
-        <input type="checkbox">
-      </td>
-      <td>${item.playlist}</td>
-    `;
-    
+    let watchedCount = 0;
+    let watchedSeconds = 0;
+
+    data.forEach(item => {
+      totalSeconds += item.seconds;
+
+      const link = "https://www.youtube.com/watch?v=" + item.videoId;
+
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${formatDate(item.date)}</td>
+        <td><a href="${link}" target="_blank      <td class="time-cell">${formatDuration(item.seconds)}</td>
+        <td class="check-cell">
+          <input type="checkbox">
+        </td>
+        <td>${item.playlist}</td>
+      `;
+
       const checkbox = tr.querySelector("input");
       const key = item.videoId;
-    
-      // 保存状態を復元
+
+      // 初期状態
       if (localStorage.getItem(key) === "true") {
         checkbox.checked = true;
+        watchedCount++;
+        watchedSeconds += item.seconds;
       }
-    
-      // 状態変更時に保存
+
+      // 変更時
       checkbox.addEventListener("change", () => {
         localStorage.setItem(key, checkbox.checked);
+        location.reload();
       });
-    
+
       tbody.appendChild(tr);
     });
-    
+
+    // 視聴率
+    const percent = totalCount > 0
+      ? ((watchedCount / totalCount) * 100).toFixed(1)
+      : 0;
+
+    // 表示
+    document.getElementById("stats").innerHTML = `
+      <p>総動画：${totalCount}本 / ${formatTotal(totalSeconds)}</p>
+      <p>視聴済：${watchedCount}本 / ${formatTotal(watchedSeconds)}</p>
+      <p>視聴率：${percent}%</p>
+    `;
   });
 </script>
 
