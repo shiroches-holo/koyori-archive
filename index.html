@@ -7,7 +7,7 @@
 <body>
   <h1>博衣こより 配信アーカイブ</h1>
 
-  <p>配信一覧（自動取得）</p>
+  <p>配信一覧（JSON取得）</p>
 
   <table border="1" id="list">
     <thead>
@@ -23,37 +23,29 @@
   </table>
 
 <script>
-const url = "https://docs.google.com/spreadsheets/d/1SAclNEE_Grq8gFozc8evWujZQ_r9L5S0Mw5YUxrPP-E/gviz/tq?tqx=out:csv&sheet=ライブ配信";
+const url = "https://script.google.com/macros/s/AKfycbzLNPVR28em6L534Lk6FB9yKSJmAtkhJKqX6aFwREIgTtsKyCNPAcIZfeUoTsuUpKrkPA/exec";
 
 fetch(url)
-  .then(res => res.text())
+  .then(res => res.json())
   .then(data => {
-    const rows = data.split("\n").slice(1);
     const tbody = document.querySelector("#list tbody");
 
-    rows.forEach(row => {
-      const cols = row.split(",");
+    data.forEach(item => {
+      const link = "https://www.youtube.com/watch?v=" + item.videoId;
 
-      if (cols.length >= 6) {
-        const videoId = cols[0].replace(/"/g, '');
-        const title = cols[1].replace(/"/g, '');
-        const date = cols[2].replace(/"/g, '');
-        const duration = cols[4].replace(/"/g, '');
-        const playlist = cols[5].replace(/"/g, '');
+      const tr = document.createElement("tr");
 
-        const link = "https://www.youtube.com/watch?v=" + videoId;
+      tr.innerHTML = `
+        <td>${item.date}</td>
+        <td>${item.title}</td>
+        <td>${item.playlist}</td>
+        <td>${item.duration}</td>
+        <td><a href="${link}" target `;
 
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${date}</td>
-          <td>${title}</td>
-          <td>${playlist}</td>
-          <td>${duration}</td>
-          <td><a href="${link}" target="_blank       tbody.appendChild(tr);
-      }
+      tbody.appendChild(tr);
     });
   });
 </script>
+
 </body>
 </html>
