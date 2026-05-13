@@ -5,9 +5,29 @@
   <title>こよちゃん配信一覧</title>
 
 <style>
-  table, th, td {
-    border: 1px solid black;
+  body {
+    background: #f5f7fa;
+    font-family: sans-serif;
+  }
+
+  table {
     border-collapse: collapse;
+    background: white;
+    width: 100%;
+  }
+
+  th, td {
+    border: 1px solid black;
+  }
+
+  th {
+    background: #e3e8ef;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #e3e8ef;
   }
 
   .time-cell {
@@ -19,6 +39,7 @@
     text-align: center;
   }
 </style>
+
 </head>
 <body>
   <h1>博衣こより 配信アーカイブ</h1>
@@ -30,8 +51,6 @@
 
   </div>
 
-  <div id="stats"></div>
-
   <div id="controls" style="margin:10px 0;">
     <input type="text" id="search" placeholder="タイトル検索">
   
@@ -42,10 +61,17 @@
     </select>
   
     <select id="sort">
-      <option value="new">新しい順</option>
-      <option value="old">古い順</option>
-      <option value="long">再生時間（長い順）</option>
+      <option value="new">公開日（新→旧）</option>
+      <option value="old">公開日（旧→新）</option>
+      <option value="title">タイトル順</option>
+      <option value="long">時間（長い順）</option>
+      <option value="short">時間（短い順）</option>
     </select>
+  
+    <select id="playlistFilter">
+      <option value="all">全再生リスト</option>
+    </select>
+    
   </div>
   
   <p>配信一覧</p>
@@ -66,94 +92,120 @@
 <script>
 const url = "https://script.google.com/macros/s/AKfycbzLNPVR28em6L534Lk6FB9yKSJmAtkhJKqX6aFwREIgTtsKyCNPAcIZfeUoTsuUpKrkPA/exec";
 
-let totalCount, totalSeconds;
-let watchedCount, watchedSeconds;
+let data = [];
 
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${d.getMinutes().toString().padStart(2,'0')}`;
+function formatDate(d){
+  const date = new Date(d);
+  return `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${date.getMinutes().toString().padStart(2,'0')}`;
 }
 
-function formatDuration(sec) {
-  const h = Math.floor(sec / 3600);
-  const m = Math.floor((sec % 3600) / 60);
-  const s = sec % 60;
-
-  let r = "";
-  if (h) r += `${h}時間`;
-  if (m) r += `${m}分`;
-  if (s) r += `${s}秒`;
-  return r || "0秒";
+function formatDuration(sec){
+  const h=Math.floor(sec/3600);
+  const m=Math.floor((sec%3600)/60);
+  const s=sec%60;
+  return (h?`${h}時間`:"")+(m?`${m}分`:"")+(s?`${s}秒`:"");
 }
 
-function formatTotal(sec){
-  return `${Math.floor(sec/3600)}時間${Math.floor((sec%3600)/60)}分`;
+// ✅ 描画関数
+function render(){
+  const tbody = document.querySelector("#list tbody");
+  tbody.innerHTML = "";
+
+  const keyword = document.getElementById("search").value.toLowerCase();
+  const status = document.getElementById("filterStatus").value;
+  const sort = document.getElementById("sort").value;
+  const playlist = document.getElementById("playlistFilter").value;
+
+  let filtered = data.filter(item=>{
+    if(!item.title.toLowerCase().includes(keyword)) return false;
+
+    const watched = localStorage.getItem(item.videoId)==="true";
+
+    if(status==="watched" && !watched) return false;
+    if(status==="unwatched" && watched) return false;
+
+    if(playlist!=="all" && item.playlist!==playlist) return false;
+
+    return true;
+  });
+
+  if(sort==="new") filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if(sort==="old") filtered.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(sort==="title") filtered.sort((a,b)=>a.title.localeCompare(b.title));
+  if(sort==="long") filtered.sort((a,b)=>b.seconds-a.seconds);
+  if(sort==="short") filtered.sort((a,b)=>a.seconds-b.seconds);
+
+  filtered.forEach(item=>{
+    const tr=document.createElement("tr");
+    const checked = localStorage.getItem(item.videoId)==="true";
+
+    tr.innerHTML = `
+      <td>${formatDate(item.date)}</td>
+      <td><a href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank">${item.title}</a></td>
+      <td class="time-cell">${formatDuration(item.seconds)}</td>
+      <td class="check-cell">
+        <input type="checkbox" ${checked ? "checked":""}>
+      </td>
+      <td>${item.playlist}</td>
+    `;
+
+    const cb = tr.querySelector("input");
+    cb.addEventListener("change", ()=>{
+      localStorage.setItem(item.videoId, cb.checked);
+      updateStats();
+      render();
+    });
+
+    tbody.appendChild(tr);
+  });
 }
 
-// 👉 stats更新関数（超重要）
-function updateStats(data){
-  watchedCount = 0;
-  watchedSeconds = 0;
+// ✅ stats
+function updateStats(){
+  let total = data.length;
+  let watched = 0;
+  let totalSec=0;
+  let watchedSec=0;
 
-  data.forEach(item=>{
-    if(localStorage.getItem(item.videoId) === "true"){
-      watchedCount++;
-      watchedSeconds += item.seconds;
+  data.forEach(x=>{
+    totalSec += x.seconds;
+    if(localStorage.getItem(x.videoId)==="true"){
+      watched++;
+      watchedSec += x.seconds;
     }
   });
 
-  const percent = totalCount
-    ? ((watchedCount/totalCount)*100).toFixed(1)
-    : 0;
-
   document.getElementById("stats").innerHTML = `
-    <p>総動画：${totalCount}本 / ${formatTotal(totalSeconds)}</p>
-    <p>視聴済：${watchedCount}本 / ${formatTotal(watchedSeconds)}</p>
-    <p>視聴率：${percent}%</p>
+    <p>総動画：${total}本 / ${Math.floor(totalSec/3600)}時間</p>
+    <p>視聴済：${watched}本 / ${Math.floor(watchedSec/3600)}時間</p>
+    <p>視聴率：${((watched/total)*100).toFixed(1)}%</p>
   `;
 }
 
+// ✅ 初期読み込み
 fetch(url)
   .then(r=>r.json())
-  .then(data=>{
-    const tbody = document.querySelector("#list tbody");
+  .then(json=>{
+    data = json;
 
-    totalCount = data.length;
-    totalSeconds = data.reduce((sum,x)=>sum+x.seconds,0);
+    // 再生リスト生成
+    const set = new Set(data.map(x=>x.playlist));
+    const sel = document.getElementById("playlistFilter");
 
-    data.forEach(item=>{
-      const tr = document.createElement("tr");
-
-      const link = `https://www.youtube.com/watch?v=${item.videoId}`;
-
-      tr.innerHTML = `
-        <td>${formatDate(item.date)}</td>
-        <td><a href="${link}" target="_blank">${item.title}</a></td>
-        <td class="time-cell">${formatDuration(item.seconds)}</td>
-        <td class="check-cell">
-          <input type="checkbox">
-        </td>
-        <td>${item.playlist}</td>
-      `;
-
-      const cb = tr.querySelector("input");
-
-      // 初期状態
-      if(localStorage.getItem(item.videoId) === "true"){
-        cb.checked = true;
-      }
-
-      // ✅ reloadやめてリアルタイム更新
-      cb.addEventListener("change", ()=>{
-        localStorage.setItem(item.videoId, cb.checked);
-        updateStats(data);
-      });
-
-      tbody.appendChild(tr);
+    set.forEach(p=>{
+      const opt=document.createElement("option");
+      opt.value=p;
+      opt.textContent=p;
+      sel.appendChild(opt);
     });
 
-    // 初回表示
-    updateStats(data);
+    updateStats();
+    render();
+
+    document.getElementById("search").addEventListener("input", render);
+    document.getElementById("filterStatus").addEventListener("change", render);
+    document.getElementById("sort").addEventListener("change", render);
+    document.getElementById("playlistFilter").addEventListener("change", render);
   });
 </script>
 
