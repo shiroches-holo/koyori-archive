@@ -76,6 +76,7 @@
 
 <details id="playlistBox">
   <summary>再生リスト選択</summary>
+  <input type="text" id="playlistSearch" placeholder="再生リスト検索">
 
   <div id="playlistFilterArea"></div>
     
@@ -204,34 +205,35 @@ function render(){
   const sort = document.getElementById("sort").value;
   //const playlist = document.getElementById("playlistFilter").value;
 
-  let filtered = data.filter(item=>{
-    
-    // 🔍 キーワード検索（タイトル＋再生リスト）
+  let filtered = data.filter(item => {
+  
+    // 🔍 タイトル＋再生リスト検索
     if(
       !item.title.toLowerCase().includes(keyword) &&
       !item.playlist.toLowerCase().includes(keyword)
     ){
       return false;
     }
-
+  
+    // 🔍 再生リスト専用検索
+    if(!item.playlist.toLowerCase().includes(playlistKeyword)){
+      return false;
+    }
+  
     // ✅ 視聴状態
     const watched = localStorage.getItem(item.videoId) === "true";
-  
     if(status === "watched" && !watched) return false;
     if(status === "unwatched" && watched) return false;
-    
-    // ✅ 選択されてるプレイリスト取得
+  
+    // ✅ チェックボックス
     const checkedPlaylists = Array.from(
       document.querySelectorAll("#playlistFilterArea input:checked")
     ).map(cb => cb.value);
-    
-    // ✅ 0件 → 全部消す
+  
     if(checkedPlaylists.length === 0) return false;
-    
-    // ✅ 選択されてないものを除外
     if(!checkedPlaylists.includes(item.playlist)) return false;
-
-    return true; 
+  
+    return true;
   });
 
   // 表示件数を100件に制限
@@ -292,6 +294,7 @@ fetch(url)
     // 再生リスト生成
     const set = new Set(data.map(x=>x.playlist));    
     const area = document.getElementById("playlistFilterArea");
+    const playlistKeyword = document.getElementById("playlistSearch").value.toLowerCase();
     
     set.forEach(p=>{
       const label = document.createElement("label");
@@ -368,6 +371,28 @@ fetch(url)
       document.querySelectorAll("#playlistFilterArea input").forEach(cb=>{
         cb.checked = false;
       });
+      render();
+    });
+
+    document.getElementById("resetAll").addEventListener("click", ()=>{
+      // 検索
+      document.getElementById("search").value = "";
+    
+      // 状態
+      document.getElementById("filterStatus").value = "all";
+    
+      // ソート
+      document.getElementById("sort").value = "new";
+    
+      // 日付
+      document.getElementById("dateFrom").value = "";
+      document.getElementById("dateTo").value = "";
+    
+      // 再生リスト全部ON
+      document.querySelectorAll("#playlistFilterArea input").forEach(cb=>{
+        cb.checked = true;
+      });
+    
       render();
     });
 
