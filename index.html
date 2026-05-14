@@ -74,6 +74,12 @@
 
 <div id="stats"></div>
 
+<details id="playlistBox">
+  <summary>再生リスト選択</summary>
+
+  <div id="playlistFilterArea"></div>
+</details>
+  
 <div id="controls">
   <input type="text" id="search" placeholder="タイトル検索">
 
@@ -97,14 +103,8 @@
   </select>
   -->
   
-  <details id="playlistBox">
-    <summary>再生リスト選択</summary>
-  
-    <div id="playlistFilterArea"></div>
-  
-    <button id="playlistAll">全て✔</button>
-    <button id="playlistClear">全て解除</button>
-  </details>
+  <button id="playlistAll">全て✔</button>
+  <button id="playlistClear">全て解除</button>
   
   <input type="date" id="dateFrom">
   ～
@@ -116,6 +116,8 @@
   <button id="toTop">🔼</button>
   <button id="toBottom">🔽</button>
 
+  <button id="resetAll">リセット</button>
+  
 </div>
 
 <p>配信一覧</p>
