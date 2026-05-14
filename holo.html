@@ -157,7 +157,7 @@ td {
 
 <script>
 
-const URL_BASE = "GASのURL";
+const URL_BASE = "https://script.google.com/macros/s/AKfycbxuVEF3_YebcaZaQIvJpL1NVAMr7xIwwlP2dWawRIc2v9UUWhVDdZocgacWnEA9zVOT/exec";
 
 let data = [];
 let currentMember = "";
@@ -280,7 +280,7 @@ function render(){
 
     tr.innerHTML=`
     <td>${formatDate(item.date)}</td>
-    <td>https://youtu.be/${item.videoId}${item.title}</a></td>
+    <td><a href="https://youtu.be/${item.videoId}" target="_blank">${item.title}</a></td>
     <td>${formatDuration(item.seconds)}</td>
     <td><input type="checkbox" ${checked?"checked":""}></td>
     <td>${item.playlist}</td>
