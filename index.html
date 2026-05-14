@@ -207,40 +207,37 @@ function render(){
   //const playlist = document.getElementById("playlistFilter").value;
 
   let filtered = data.filter(item => {
-  
-    // 🔍 タイトル検索（これだけ）
-    if(keyword && !item.title.toLowerCase().includes(keyword)){
-      return false;
-    }
-  
-    // 🔍 再生リスト検索（これだけ）
-    if(playlistKeyword && !item.playlist.toLowerCase().includes(playlistKeyword)){
-      return false;
-    }
-  
-    // ✅ 視聴状態
-    const watched = localStorage.getItem(item.videoId) === "true";
-    if(status === "watched" && !watched) return false;
-    if(status === "unwatched" && watched) return false;
-  
-    // ✅ 再生リストチェック
-    const checkedPlaylists = Array.from(
-      document.querySelectorAll("#playlistFilterArea input:checked")
-    ).map(cb => cb.value);
-  
-    if(checkedPlaylists.length === 0) return false;
-    if(!checkedPlaylists.includes(item.playlist)) return false;
-  
-    // ✅ 日付
-    const from = document.getElementById("dateFrom").value;
-    const to = document.getElementById("dateTo").value;
-    const itemDate = new Date(item.date);
-  
-    if(from && itemDate < new Date(from)) return false;
-    if(to && itemDate > new Date(to)) return false;
-  
-    return true;
-  });
+
+  // 🔍 タイトル検索
+  if(keyword && !item.title.toLowerCase().includes(keyword)){
+    return false;
+  }
+
+  // ✅ チェックボックス＋再生リスト検索
+  const checkedPlaylists = Array.from(
+    document.querySelectorAll("#playlistFilterArea input:checked")
+  )
+  .map(cb => cb.value)
+  .filter(name => name.toLowerCase().includes(playlistKeyword));
+
+  if(checkedPlaylists.length === 0) return false;
+  if(!checkedPlaylists.includes(item.playlist)) return false;
+
+  // ✅ 視聴状態
+  const watched = localStorage.getItem(item.videoId) === "true";
+  if(status === "watched" && !watched) return false;
+  if(status === "unwatched" && watched) return false;
+
+  // ✅ 日付
+  const from = document.getElementById("dateFrom").value;
+  const to = document.getElementById("dateTo").value;
+  const itemDate = new Date(item.date);
+
+  if(from && itemDate < new Date(from)) return false;
+  if(to && itemDate > new Date(to)) return false;
+
+  return true;
+});
 
   // 表示件数を100件に制限
   // const limit = 100;
