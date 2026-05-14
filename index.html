@@ -220,6 +220,7 @@ function render(){
     if(checkedPlaylists.length > 0 && !checkedPlaylists.includes(item.playlist)){
       return false;
     }
+    return true; 
   });
 
   // 表示件数を100件に制限
