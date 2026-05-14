@@ -208,18 +208,13 @@ function render(){
 
   let filtered = data.filter(item => {
   
-    // 🔍 タイトル検索
-    if(!item.title.toLowerCase().includes(keyword)){
-      return false;
-    }
-
-    // 🔍 再生リスト検索
-    if(playlistKeyword && !item.playlist.toLowerCase().includes(playlistKeyword)){
+    // 🔍 タイトル検索（これだけ）
+    if(keyword && !item.title.toLowerCase().includes(keyword)){
       return false;
     }
   
-    // 🔍 再生リスト専用検索
-    if(!item.playlist.toLowerCase().includes(playlistKeyword)){
+    // 🔍 再生リスト検索（これだけ）
+    if(playlistKeyword && !item.playlist.toLowerCase().includes(playlistKeyword)){
       return false;
     }
   
@@ -228,13 +223,21 @@ function render(){
     if(status === "watched" && !watched) return false;
     if(status === "unwatched" && watched) return false;
   
-    // ✅ チェックボックス
+    // ✅ 再生リストチェック
     const checkedPlaylists = Array.from(
       document.querySelectorAll("#playlistFilterArea input:checked")
     ).map(cb => cb.value);
   
     if(checkedPlaylists.length === 0) return false;
     if(!checkedPlaylists.includes(item.playlist)) return false;
+  
+    // ✅ 日付
+    const from = document.getElementById("dateFrom").value;
+    const to = document.getElementById("dateTo").value;
+    const itemDate = new Date(item.date);
+  
+    if(from && itemDate < new Date(from)) return false;
+    if(to && itemDate > new Date(to)) return false;
   
     return true;
   });
