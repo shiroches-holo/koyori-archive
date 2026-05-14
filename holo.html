@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ホロメン アーカイブ視聴チェッカー</title>
+
+<style>
+body {
+  background:#f5f7fa;
+  font-family:sans-serif;
+}
+
+/* ヘッダー */
+#header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+
+#selectors select {
+  padding:5px;
+  margin-right:5px;
+}
+
+#memberTitle {
+  font-size:22px;
+  margin:10px 0;
+}
+
+/* テーブル */
+table {
+  border-collapse: collapse;
+  background: white;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid black;
+}
+
+th {
+  background: #e3e8ef;
+  padding: 6px;
+}
+
+td {
+  padding: 6px;
+}
+
+.time-cell {
+  text-align:right;
+}
+
+/* 操作バー */
+#controls {
+  position: sticky;
+  top: 0;
+  background: white;
+  padding:10px;
+  margin-bottom:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* 再生リスト */
+#playlistFilterArea {
+  max-height:150px;
+  overflow-y:auto;
+  border:1px solid #ccc;
+  padding:5px;
+}
+
+/* ローディング */
+.spinner {
+  margin:20px auto;
+  width:30px;
+  height:30px;
+  border:4px solid #ccc;
+  border-top:4px solid #4cafef;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {transform:rotate(0)}
+  100% {transform:rotate(360deg)}
+}
+</style>
+</head>
+
+<body>
+
+<h1>ホロメン アーカイブ視聴チェッカー</h1>
+
+<div id="header">
+  <div id="selectors">
+    グループ：
+    <select id="groupSelect"></select>
+    メンバー：
+    <select id="memberSelect"></select>
+  </div>
+
+  <div>
+    <details>
+      <summary>データ移行</summary>
+      <button id="exportBtn">エクスポート</button>
+      <input type="file" id="importFile">
+    </details>
+
+    <button onclick="window.open('README.html')">使い方</button>
+  </div>
+</div>
+
+<div id="memberTitle"></div>
+
+<div id="stats"></div>
+
+<details>
+<summary>再生リスト（<span id="selectedCount">0</span>）</summary>
+<input id="playlistSearch" placeholder="検索">
+<div id="playlistFilterArea"></div>
+<button id="playlistAll">全✔</button>
+<button id="playlistClear">全解除</button>
+</details>
+
+<div id="controls">
+<input id="search" placeholder="タイトル検索">
+
+<select id="filterStatus">
+<option value="all">すべて</option>
+<option value="watched">視聴済</option>
+<option value="unwatched">未視聴</option>
+</select>
+
+<select id="sort">
+<option value="new">新→旧</option>
+<option value="old">旧→新</option>
+<option value="long">長い</option>
+<option value="short">短い</option>
+</select>
+
+<button id="resetAll">リセット</button>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>公開日</th>
+<th>タイトル</th>
+<th>時間</th>
+<th>視聴</th>
+<th>再生リスト</th>
+</tr>
+</thead>
+<tbody id="list"></tbody>
+</table>
+
+<script>
+
+const URL_BASE = "GASのURL";
+
+let data = [];
+let currentMember = "";
+
+/* --- ユーティリティ --- */
+function key(id){
+  return currentMember + "_" + id;
+}
+
+function formatDate(d){
+  return new Date(d).toLocaleString();
+}
+
+function formatDuration(sec){
+  const h=Math.floor(sec/3600);
+  const m=Math.floor((sec%3600)/60);
+  return `${h}h${m}m`;
+}
+
+/* --- メンバー取得 --- */
+async function loadMembers(){
+  const res = await fetch(URL_BASE+"?type=members");
+  const members = await res.json();
+
+  const groupSelect = document.getElementById("groupSelect");
+  const memberSelect = document.getElementById("memberSelect");
+
+  const groups = [...new Set(members.map(x=>x.group))];
+
+  groups.forEach(g=>{
+    groupSelect.add(new Option(g,g));
+  });
+
+  groupSelect.onchange = ()=>updateMemberList(members);
+  updateMemberList(members);
+}
+
+function updateMemberList(members){
+  const group = document.getElementById("groupSelect").value;
+  const memberSelect = document.getElementById("memberSelect");
+
+  memberSelect.innerHTML="";
+
+  members.filter(x=>x.group===group).forEach(m=>{
+    memberSelect.add(new Option(m.name, m.id));
+  });
+
+  memberSelect.onchange = loadData;
+  loadData();
+}
+
+/* --- データ取得 --- */
+async function loadData(){
+  currentMember = document.getElementById("memberSelect").value;
+
+  document.getElementById("stats").innerHTML = `<div class="spinner"></div>`;
+
+  const res = await fetch(URL_BASE+"?member="+currentMember);
+  data = await res.json();
+
+  document.getElementById("memberTitle").textContent =
+    document.getElementById("memberSelect").selectedOptions[0].text;
+
+  initPlaylist();
+  render();
+}
+
+/* --- プレイリスト --- */
+function initPlaylist(){
+  const area = document.getElementById("playlistFilterArea");
+  area.innerHTML="";
+
+  const set = new Set(data.map(x=>x.playlist));
+
+  set.forEach(p=>{
+    const label=document.createElement("label");
+    label.style.display="block";
+
+    label.innerHTML=`
+    <input type="checkbox" value="${p}" checked> ${p}
+    `;
+
+    label.querySelector("input").onchange=render;
+
+    area.appendChild(label);
+  });
+}
+
+/* --- 描画 --- */
+function render(){
+
+  const tbody = document.getElementById("list");
+  tbody.innerHTML="";
+
+  const keyword = document.getElementById("search").value.toLowerCase();
+  const status = document.getElementById("filterStatus").value;
+
+  const checkedPlaylists =
+    [...document.querySelectorAll("#playlistFilterArea input:checked")]
+    .map(cb=>cb.value);
+
+  const filtered = data.filter(item=>{
+
+    if(keyword && !item.title.toLowerCase().includes(keyword)) return false;
+
+    if(!checkedPlaylists.includes(item.playlist)) return false;
+
+    const watched = localStorage.getItem(key(item.videoId))==="true";
+
+    if(status==="watched" && !watched) return false;
+    if(status==="unwatched" && watched) return false;
+
+    return true;
+  });
+
+  filtered.forEach(item=>{
+    const tr=document.createElement("tr");
+
+    const checked = localStorage.getItem(key(item.videoId))==="true";
+
+    tr.innerHTML=`
+    <td>${formatDate(item.date)}</td>
+    <td>https://youtu.be/${item.videoId}${item.title}</a></td>
+    <td>${formatDuration(item.seconds)}</td>
+    <td><input type="checkbox" ${checked?"checked":""}></td>
+    <td>${item.playlist}</td>
+    `;
+
+    tr.querySelector("input").onchange=(e)=>{
+      localStorage.setItem(key(item.videoId), e.target.checked);
+      render();
+    };
+
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("selectedCount").textContent =
+    checkedPlaylists.length;
+}
+
+/* --- データ移行 --- */
+document.getElementById("exportBtn").onclick=()=>{
+  const obj={};
+  Object.keys(localStorage).forEach(k=>obj[k]=localStorage.getItem(k));
+
+  const blob=new Blob([JSON.stringify(obj)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="data.json";
+  a.click();
+};
+
+document.getElementById("importFile").onchange=e=>{
+  const f=e.target.files[0];
+  const r=new FileReader();
+  r.onload=()=>{
+    const obj=JSON.parse(r.result);
+    Object.keys(obj).forEach(k=>localStorage.setItem(k,obj[k]));
+    render();
+  };
+  r.readAsText(f);
+};
+
+/* --- イベント --- */
+document.getElementById("search").oninput=render;
+
+document.getElementById("playlistSearch").oninput=e=>{
+  const k=e.target.value.toLowerCase();
+
+  document.querySelectorAll("#playlistFilterArea label").forEach(l=>{
+    l.style.display=l.textContent.toLowerCase().includes(k)?"block":"none";
+  });
+};
+
+document.getElementById("playlistAll").onclick=()=>{
+  document.querySelectorAll("#playlistFilterArea input").forEach(c=>c.checked=true);
+  render();
+};
+
+document.getElementById("playlistClear").onclick=()=>{
+  document.querySelectorAll("#playlistFilterArea input").forEach(c=>c.checked=false);
+  render();
+};
+
+document.getElementById("resetAll").onclick=()=>{
+  document.getElementById("search").value="";
+  render();
+};
+
+/* --- 初期化 --- */
+loadMembers();
+
+</script>
+
+</body>
+</html>
