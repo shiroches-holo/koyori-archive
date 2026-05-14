@@ -63,7 +63,7 @@
 </head>
 <body>
 
-<h1>博衣こより🧪 配信アーカイブ</h1>
+<h1>博衣こより🧪 アーカイブチェッカー</h1>
 
 <div id="stats"></div>
 
@@ -175,8 +175,8 @@ function updateStats(filtered){
   document.getElementById("stats").innerHTML = `
     <p>総動画：${total}本 / ${formatTotal(totalSec)}</p>
     <p>視聴済：${watched}本 / ${formatTotal(watchedSec)}</p>
-    <p>視聴率：${total ? ((watched/total)*100).toFixed(1) : 0}%</p>
-    <p>表示中：${filtered.length}件</p>
+    <p>視聴達成率：${total ? ((watched/total)*100).toFixed(1) : 0}%</p>
+    <p>表示件数：${filtered.length}件</p>
   `;
 }
 
