@@ -187,7 +187,7 @@ function render(){
   const keyword = document.getElementById("search").value.toLowerCase();
   const status = document.getElementById("filterStatus").value;
   const sort = document.getElementById("sort").value;
-  const playlist = document.getElementById("playlistFilter").value;
+  //const playlist = document.getElementById("playlistFilter").value;
 
   let filtered = data.filter(item=>{
     /*+
@@ -310,7 +310,7 @@ fetch(url)
     document.getElementById("search").addEventListener("input", render);
     document.getElementById("filterStatus").addEventListener("change", render);
     document.getElementById("sort").addEventListener("change", render);
-    document.getElementById("playlistFilter").addEventListener("change", render);
+    //document.getElementById("playlistFilter").addEventListener("change", render);
     document.getElementById("dateFrom").addEventListener("change", render);
     document.getElementById("dateTo").addEventListener("change", render);
     document.getElementById("toTop").addEventListener("click", ()=>{
