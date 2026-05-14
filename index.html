@@ -229,10 +229,12 @@ function render(){
       document.querySelectorAll("#playlistFilterArea input:checked")
     ).map(cb => cb.value);
     
-    // ✅ 条件に追加
-    if(checkedPlaylists.length > 0 && !checkedPlaylists.includes(item.playlist)){
-      return false;
-    }
+    // ✅ 0件 → 全部消す
+    if(checkedPlaylists.length === 0) return false;
+    
+    // ✅ 選択されてないものを除外
+    if(!checkedPlaylists.includes(item.playlist)) return false;
+
     return true; 
   });
 
