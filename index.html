@@ -97,6 +97,7 @@
     box-shadow: 0 3px 8px rgba(0,0,0,0.06);
   }
 
+  /* 縦並び
   #stats {
     background: white;
     border-radius: 10px;
@@ -105,6 +106,15 @@
     margin-bottom: 10px;
   
     box-shadow: 0 4px 10px rgba(255, 160, 180, 0.2);
+  }
+  */
+
+  /* 横並び */
+  #stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
   }
 
   table {
@@ -130,85 +140,51 @@
     position: sticky;
     top: 0;
   }
+
+  .stat-box {
+    background: white;
+    border-radius: 10px;
+    padding: 10px 16px;
+    min-width: 120px;
+  
+    box-shadow: 0 4px 10px rgba(255, 150, 180, 0.2);
+  }
+  
+  .stat-box .label {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .stat-box .value {
+    font-size: 18px;
+    font-weight: bold;
+  }
   
 </style>
 
 </head>
+
 <body>
-  
+
 <header>
   <h1>博衣こより🧪 アーカイブチェッカー</h1>
 </header>
 
-<div class="top-area">
-  <div id="stats"></div>
+<!-- ✅ stats 横並びエリア -->
+<div id="stats"></div>
 
-  <div id="controls">
-    <div class="controls-left">
-
-      <input type="text" id="search" placeholder="タイトル検索">
-
-      <select id="filterStatus">
-        <option value="all">すべて</option>
-        <option value="watched">視聴済み</option>
-        <option value="unwatched">未視聴</option>
-      </select>
-
-      <select id="sort">
-        <option value="new">公開日（新→旧）</option>
-        <option value="old">公開日（旧→新）</option>
-        <option value="title">タイトル順</option>
-        <option value="long">時間（長い順）</option>
-        <option value="short">時間（短い順）</option>
-      </select>
-
-      <input type="date" id="dateFrom">
-      ～
-      <input type="date" id="dateTo">
-
-      <button id="checkAll">表示を全部✔</button>
-      <button id="uncheckAll">表示を全部解除</button>
-
-      <button id="toTop">🔼</button>
-      <button id="toBottom">🔽</button>
-
-      <button id="resetAll">条件リセット</button>
-
-    </div>
-
-    <div class="controls-right">
-      <details>
-        <summary>データ移行</summary>
-        <button id="exportBtn">エクスポート</button>
-        <button id="importBtn">インポート</button>
-        <input type="file" id="importFile" style="display:none">
-        <br>
-        <button onclick="window.open('README.html')">使い方</button>
-      </details>
-    </div>
-  </div>
-</div>
-
-<details id="playlistBox">
-  <summary>再生リスト選択</summary>
-  <input type="text" id="playlistSearch" placeholder="再生リスト検索">
-
-  <div id="playlistFilterArea"></div>
-    
-  <button id="playlistAll">全て✔</button>
-  <button id="playlistClear">全て解除</button>
-</details>
-  
+<!-- ✅ controls は1個だけ -->
 <div id="controls">
   <div class="controls-left">
+
     <input type="text" id="search" placeholder="タイトル検索">
-  
+
     <select id="filterStatus">
       <option value="all">すべて</option>
       <option value="watched">視聴済み</option>
       <option value="unwatched">未視聴</option>
     </select>
-  
+
     <select id="sort">
       <option value="new">公開日（新→旧）</option>
       <option value="old">公開日（旧→新）</option>
@@ -216,27 +192,41 @@
       <option value="long">時間（長い順）</option>
       <option value="short">時間（短い順）</option>
     </select>
-  
-    <!--
-    <select id="playlistFilter">
-      <option value="all">全再生リスト</option>
-    </select>
-    -->
-    
+
     <input type="date" id="dateFrom">
     ～
     <input type="date" id="dateTo">
-  
+
     <button id="checkAll">表示を全部✔</button>
     <button id="uncheckAll">表示を全部解除</button>
-  
+
     <button id="toTop">🔼</button>
     <button id="toBottom">🔽</button>
-  
+
     <button id="resetAll">条件リセット</button>
+
   </div>
-   
+
+  <div class="controls-right">
+    <details>
+      <summary>データ移行</summary>
+      <button id="exportBtn">エクスポート</button>
+      <button id="importBtn">インポート</button>
+      <input type="file" id="importFile" style="display:none">
+      <br>
+      <button onclick="window.open('README.html')">使い方</button>
+    </details>
+  </div>
 </div>
+
+<details id="playlistBox">
+  <summary>再生リスト選択</summary>
+  <input type="text" id="playlistSearch" placeholder="再生リスト検索">
+  <div id="playlistFilterArea"></div>
+
+  <button id="playlistAll">全て✔</button>
+  <button id="playlistClear">全て解除</button>
+</details>
 
 <p>配信一覧</p>
 
@@ -252,6 +242,8 @@
   </thead>
   <tbody></tbody>
 </table>
+
+</body>
 
 <script>
 const url = "https://script.google.com/macros/s/AKfycby35nCN7uhqkTvMhTmb52O33xHxrpHEYkjXl0h8sCv34gxUenTfXbrAwzCs86kb05AR0w/exec";
@@ -287,23 +279,40 @@ function formatDuration(sec){
 function updateStats(filtered){
   let total = filtered.length;
   let watched = 0;
-  let totalSec=0;
-  let watchedSec=0;
+  let totalSec = 0;
+  let watchedSec = 0;
 
   filtered.forEach(x=>{
     totalSec += x.durationSec;
-    
+
     if(localStorage.getItem(x.videoId)==="true"){
       watched++;
       watchedSec += x.durationSec;
     }
   });
 
+  const rate = total ? ((watched/total)*100).toFixed(1) : 0;
+
   document.getElementById("stats").innerHTML = `
-    <p>総動画：${total}本 / ${formatTotal(totalSec)}</p>
-    <p>視聴済：${watched}本 / ${formatTotal(watchedSec)}</p>
-    <p>視聴達成率：${total ? ((watched/total)*100).toFixed(1) : 0}%</p>
-    <p>表示件数：${filtered.length}件</p>
+    <div class="stat-box">
+      <div class="label">総動画</div>
+      <div class="value">${total}本</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="label">視聴済</div>
+      <div class="value">${watched}本</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="label">達成率</div>
+      <div class="value">${rate}%</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="label">表示件数</div>
+      <div class="value">${filtered.length}件</div>
+    </div>
   `;
 }
 
