@@ -57,8 +57,12 @@
     flex: 1;
   }
   
-  .controls-right {
-    text-align: right;
+  .controls-right button {
+    margin-left: 6px;
+  }
+  
+  .controls-right details {
+    margin-top: 4px;
   }
 
   tr:hover {
@@ -134,6 +138,7 @@
       <summary>データ移行</summary>
       <button id="exportBtn">エクスポート</button>
       <button id="importBtn">インポート</button>
+      <input type="file" id="importFile" style="display:none">
       <input type="file" id="importFile" style="display:none">
       <br>
       <button onclick="window.open('README.html')">使い方</button>
@@ -476,15 +481,8 @@ fetch(url)
       a.click();
     };
     
-    document.getElementById("importFile").onchange=e=>{
-      const f=e.target.files[0];
-      const r=new FileReader();
-      r.onload=()=>{
-        const obj=JSON.parse(r.result);
-        Object.keys(obj).forEach(k=>localStorage.setItem(k,obj[k]));
-        render();
-      };
-      r.readAsText(f);
+    document.getElementById("importBtn").onclick = () => {
+      document.getElementById("importFile").click();
     };
 
   });
