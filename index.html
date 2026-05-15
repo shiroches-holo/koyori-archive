@@ -230,7 +230,7 @@ function render(){
     // ✅ 日付
     const from = document.getElementById("dateFrom").value;
     const to = document.getElementById("dateTo").value;
-    const itemDate = new Date(item.date);
+    const itemDate = new Date(item.publishedAt);
   
     if(from && itemDate < new Date(from)) return false;
     if(to && itemDate > new Date(to)) return false;
@@ -256,7 +256,7 @@ function render(){
     tr.innerHTML = `
     <td>${formatDate(item.publishedAt)}</td>
     <td>
-      https://www.youtube.com/watch?v=${item.videoId}
+      <a href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank">
         ${item.title}
       </a>
     </td>
@@ -265,9 +265,11 @@ function render(){
       <input type="checkbox" ${checked ? "checked":""}>
     </td>
     <td>
-      ${item.playlistUrl 
-        ? `${item.playlistUrl}` 
-        : item.playlistName}
+      ${
+        item.playlistUrl
+          ? `<a href="${item.playlistUrl}" target="_blank">${item.playlistName}</a>`
+          : item.playlistName
+      }
     </td>
   `;
     if(checked){
