@@ -174,10 +174,11 @@ function updateStats(filtered){
   let watchedSec=0;
 
   filtered.forEach(x=>{
-    totalSec += x.seconds;
+    totalSec += x.durationSec;
+    
     if(localStorage.getItem(x.videoId)==="true"){
       watched++;
-      watchedSec += x.seconds;
+      watchedSec += x.durationSec;
     }
   });
 
@@ -219,7 +220,7 @@ function render(){
     ).map(cb => cb.value);
   
     if(checkedPlaylists.length === 0) return false;
-    if(!checkedPlaylists.includes(item.playlist)) return false;
+    if(!checkedPlaylists.includes(item.playlistName)) return false;
   
     // ✅ 視聴状態
     const watched = localStorage.getItem(item.videoId) === "true";
@@ -241,11 +242,10 @@ function render(){
   // const limit = 100;
   // filtered = filtered.slice(0, limit);
 
-  if(sort==="new") filtered.sort((a,b)=>new Date(b.date)-new Date(a.date));
-  if(sort==="old") filtered.sort((a,b)=>new Date(a.date)-new Date(b.date));
-  if(sort==="title") filtered.sort((a,b)=>a.title.localeCompare(b.title));
-  if(sort==="long") filtered.sort((a,b)=>b.seconds-a.seconds);
-  if(sort==="short") filtered.sort((a,b)=>a.seconds-b.seconds);
+  if(sort==="new") filtered.sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt));
+  if(sort==="old") filtered.sort((a,b)=>new Date(a.publishedAt)-new Date(b.publishedAt));
+  if(sort==="long") filtered.sort((a,b)=>b.durationSec-a.durationSec);
+  if(sort==="short") filtered.sort((a,b)=>a.durationSec-b.durationSec);
 
   filtered.forEach(item=>{
     const tr=document.createElement("tr");
@@ -254,15 +254,22 @@ function render(){
     const checked = localStorage.getItem(item.videoId)==="true";
 
     tr.innerHTML = `
-      <td>${formatDate(item.date)}</td>
-      <td><a href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank">${item.title}</a></td>
-      <td class="time-cell">${formatDuration(item.seconds)}</td>
-      <td class="check-cell">
-        <input type="checkbox" ${checked ? "checked":""}>
-      </td>
-      <td>${item.playlist}</td>
-    `;
-
+    <td>${formatDate(item.publishedAt)}</td>
+    <td>
+      https://www.youtube.com/watch?v=${item.videoId}
+        ${item.title}
+      </a>
+    </td>
+    <td class="time-cell">${formatDuration(item.durationSec)}</td>
+    <td class="check-cell">
+      <input type="checkbox" ${checked ? "checked":""}>
+    </td>
+    <td>
+      ${item.playlistUrl 
+        ? `${item.playlistUrl}` 
+        : item.playlistName}
+    </td>
+  `;
     if(checked){
       tr.style.background = "#e6ffe6";
     }
@@ -316,7 +323,7 @@ fetch(url)
     data = json;
 
     // 再生リスト生成
-    const set = new Set(data.map(x=>x.playlist));    
+    const set = new Set(data.map(x => x.playlistName));
     const area = document.getElementById("playlistFilterArea");
     
     set.forEach(p=>{
