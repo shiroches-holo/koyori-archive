@@ -553,6 +553,8 @@ fetch(url)
     console.log(json); // ←ここ追加！！
     data = json;
 
+    document.getElementById("loading").style.display = "none";
+    
     // 再生リスト生成
     const set = new Set(data.map(x => x.playlistName));
     const area = document.getElementById("playlistFilterArea");
