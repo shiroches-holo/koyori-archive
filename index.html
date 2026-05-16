@@ -90,7 +90,7 @@
   
   header {
     background: linear-gradient(
-      to right,
+      to bottom,
       /*
       #ffe4ec,
       #fff0f5
@@ -205,7 +205,7 @@
   .header-inner {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
   }
   
   .notice,
@@ -344,16 +344,6 @@
   <div class="controls-right">   
     <button id="toTop">🔼</button>
     <button id="toBottom">🔽</button>
-    <details>
-      <summary>データ移行</summary>
-      <button id="exportBtn">エクスポート</button>
-      <button id="importBtn">インポート</button>
-      <input type="file" id="importFile" style="display:none">
-      <br>
-      <div class="notice">
-        ※データは端末のブラウザ毎に保存されます
-      </div>
-    </details>
   </div>
 </div>
 
@@ -366,8 +356,17 @@
   <button id="playlistClear">全て解除</button>
 </details>
 
-<p>配信一覧</p>
-
+<div class="list-header">
+  <p>動画一覧</p>
+  
+  <details class="data-transfer">
+    <summary>視聴☑データ移行</summary>
+    <button id="exportBtn">エクスポート</button>
+    <button id="importBtn">インポート</button>
+    <input type="file" id="importFile" style="display:none">
+  </details>
+</div>
+  
 <table id="list">
   <thead>
     <tr>
