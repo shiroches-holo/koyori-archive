@@ -416,6 +416,8 @@ function updateStats(filtered){
   const rate = total
     ? Math.floor((watched/total)*1000) / 10 
     : 0;
+
+  let rateNum = rate;
   
   // ✅ 色
   let rateColor = "#333"; // ベース黒
@@ -509,13 +511,16 @@ function render(){
     if(to && itemDate > new Date(to)) return false;
 
     // ✅ 動画長さフィルタ
-    const min = document.getElementById("durMin").value;
-    const max = document.getElementById("durMax").value;
+    const minInput = document.getElementById("durMin").value;
+    const maxInput = document.getElementById("durMax").value;
+    
+    const min = minInput ? Number(minInput) : null;
+    const max = maxInput ? Number(maxInput) : null;
     
     const minutes = item.durationSec / 60;
     
-    if(min && minutes < min) return false;
-    if(max && minutes > max) return false;
+    if(min !== null && minutes < min) return false;
+    if(max !== null && minutes > max) return false;
   
     return true;
   });
