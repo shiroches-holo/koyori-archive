@@ -344,14 +344,18 @@
 
   </div>
 
-  <div class="controls-right">
+  <div class="controls-right">   
+    <button id="toTop">🔼</button>
+    <button id="toBottom">🔽</button>
     <details>
       <summary>データ移行</summary>
       <button id="exportBtn">エクスポート</button>
       <button id="importBtn">インポート</button>
       <input type="file" id="importFile" style="display:none">
       <br>
-      <button onclick="window.open('README.html')">使い方</button>
+      <div class="notice">
+        ※データは端末のブラウザ毎に保存されます
+      </div>
     </details>
   </div>
 </div>
@@ -646,15 +650,21 @@ fetch(url)
       
       label.innerHTML = `
         <input type="checkbox" value="${p}" checked>
-        ${p}
+        ${p} (${playlistCount[p] || 0})
       `;
 
       const cb = label.querySelector("input");
   
       cb.addEventListener("change", render);
 
-    area.appendChild(label);
+      area.appendChild(label);
 
+      const playlistCount = {};
+      
+      data.forEach(item=>{
+        playlistCount[item.playlistName] = (playlistCount[item.playlistName] || 0) + 1;
+      });
+      
     });
 
     render();
@@ -747,11 +757,17 @@ fetch(url)
       document.getElementById("dateFrom").value = "";
       document.getElementById("dateTo").value = "";
     
-      // 再生リスト全部ON
-      document.querySelectorAll("#playlistFilterArea input").forEach(cb=>{
+      // 再生リスト表示中のみ全部ON
+      document.querySelectorAll("#playlistFilterArea label").forEach(label=>{
+        if(label.style.display === "none") return;
+      
+        const cb = label.querySelector("input");
         cb.checked = true;
       });
-    
+
+      document.querySelector("#playlistBox summary").textContent =
+        `再生リスト選択 (${set.size})`;
+      
       render();
     });
     
