@@ -283,12 +283,6 @@
 
 <!-- ✅ stats 横並びエリア -->
 <div id="stats"></div>  
-  <div class="stat-box ${extraClass}">
-
-  <div class="progress-bar">
-    <div class="progress" style="width:${rate}%; background:${rateColor}"></div>
-  </div>
-</div>
 
 <!-- ✅ controls は1個だけ -->
 <div id="controls">
@@ -313,9 +307,13 @@
     <input type="date" id="dateFrom">
     ～
     <input type="date" id="dateTo">
+    
+    <input type="number" id="durMin" placeholder="最小(分)">
+    ～
+    <input type="number" id="durMax" placeholder="最大(分)">
 
-    <button id="checkAll">表示を全部✔</button>
-    <button id="uncheckAll">表示を全部解除</button>
+    <button id="checkAll">表示を全部☑</button>
+    <button id="uncheckAll">表示☑を全部解除</button>
 
     <button id="toTop">🔼</button>
     <button id="toBottom">🔽</button>
@@ -414,9 +412,10 @@ function updateStats(filtered){
     }
   });
   
-  // ✅ 計算は最後
-  const rate = total ? ((watched/total)*100).toFixed(1) : 0;
-  let rateNum = parseFloat(rate);
+  // ✅ 計算は最後 端数切り捨て
+  const rate = total
+    ? Math.floor((watched/total)*1000) / 10 
+    : 0;
   
   // ✅ 色
   let rateColor = "#333"; // ベース黒
@@ -508,6 +507,15 @@ function render(){
   
     if(from && itemDate < new Date(from)) return false;
     if(to && itemDate > new Date(to)) return false;
+
+    // ✅ 動画長さフィルタ
+    const min = document.getElementById("durMin").value;
+    const max = document.getElementById("durMax").value;
+    
+    const minutes = item.durationSec / 60;
+    
+    if(min && minutes < min) return false;
+    if(max && minutes > max) return false;
   
     return true;
   });
