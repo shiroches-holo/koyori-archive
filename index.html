@@ -775,10 +775,12 @@ fetch(url)
       a.href=URL.createObjectURL(blob);
       a.download="data.json";
       a.click();
+    
+      showMessage("✅ エクスポート完了");
     };
     
     document.getElementById("importBtn").onclick = () => {
-  document.getElementById("importFile").click();
+    document.getElementById("importFile").click();
 };
 
   document.getElementById("importFile").addEventListener("change", e => {
@@ -790,14 +792,15 @@ fetch(url)
     reader.onload = ev => {
       try {
         const obj = JSON.parse(ev.target.result);
-  
+    
         Object.keys(obj).forEach(k=>{
-          localStorage.setItem(k, obj[k]);
+          localStorage.setItem(k, String(obj[k]));
         });
-  
-        showMessage("✅ インポート成功！");
+    
+        showMessage(`✅ インポート成功！（${Object.keys(obj).length}件）`);
+    
         render();
-  
+    
       } catch(err){
         showMessage("❌ インポート失敗（形式エラー）", "red");
       }
