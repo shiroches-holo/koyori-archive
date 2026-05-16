@@ -369,9 +369,6 @@ function updateStats(filtered){
   let watched = 0;
   let totalSec = 0;
   let watchedSec = 0;
-  let color = "#ff9fc1";
-  if(rate > 50) color = "#ff6fa3";
-  if(rate > 80) color = "#ff3c7d";
 
   filtered.forEach(x=>{
     totalSec += x.durationSec;
