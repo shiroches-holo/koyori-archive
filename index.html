@@ -279,11 +279,11 @@
   <div class="header-inner">
     <h1>博衣こより🧪 アーカイブ視聴チェッカー</h1>
     <div class="notice">※非公式ファンメイドツールです</div>
-    <div class="notice-sub">     
-      ※本ツールはYouTubeのライブ一覧を元に作成されています  
-      そのため歌動画やShorts等が含まれる場合があります（メンバー限定は対象外です）
+  </div>
 
-    </div>
+  <div class="notice-sub">
+    ※本ツールはYouTubeライブ一覧を元に作成されています  
+    一部動画が混在します（メンバー限定除く）
   </div>
 </header>
 
@@ -536,17 +536,13 @@ function render(){
     if(from && itemDate < new Date(from)) return false;
     if(to && itemDate > new Date(to)) return false;
 
-    // ✅ 動画長さフィルタ
-    const minInput = document.getElementById("durMin").value;
-    const maxInput = document.getElementById("durMax").value;
+    // ✅ 動画時間フィルタ（ドロップダウン）
+    const limit = document.getElementById("durationLimit").value;
     
-    const min = minInput ? Number(minInput) : null;
-    const max = maxInput ? Number(maxInput) : null;
-    
-    const minutes = item.durationSec / 60;
-    
-    if(min !== null && minutes < min) return false;
-    if(max !== null && minutes > max) return false;
+    if(limit){
+      const minutes = item.durationSec / 60;
+      if(minutes > Number(limit)) return false;
+    }
   
     return true;
   });
