@@ -91,13 +91,17 @@
   header {
     background: linear-gradient(
       to bottom,
-      #ffe4ec,
-      #fff0f5
-      /*
-      #ffc0d6,
-      #ffe4ec
-      */
+      #ffc0d6 0%,
+      #ffe4ec 60%,
+      #fff5f8 100%
     );
+  
+    border-bottom: 2px solid #ff9fc1;
+    padding: 14px 18px;
+    margin-bottom: 15px;
+  
+    box-shadow: 0 4px 10px rgba(255, 150, 180, 0.2);
+  }
   
     border-bottom: 2px solid #ff9fc1;
     padding: 12px 16px;
@@ -225,6 +229,24 @@
     text-align: right;
   }
 
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .header-note-top {
+    font-size: 11px;
+    color: #666;
+  }
+  
+  .header-note-bottom {
+    text-align: right;
+    font-size: 11px;
+    color: #777;
+    margin-top: 2px;
+  }
+
   #loading {
     position: fixed;  /* ← これが超重要 */
     top: 0;
@@ -307,22 +329,18 @@
 <body>
 
 <header>
-  <!-- タイトル行 -->
-  <div class="header-title">
+
+  <div class="header-row">
     <h1>博衣こより🧪 アーカイブ視聴チェッカー</h1>
+
+    <div class="header-note-top">
+      ※非公式ファンメイドサイトです
+    </div>
   </div>
 
-  <!-- 説明行（右寄せ） -->
-  <div class="notice-area">
-    <div class="notice">※非公式ファンメイドサイトです</div>
-    <!--
-    <div class="notice-sub">
-      ※本ツールはYouTubeライブ一覧を元に作成されています  
-    </div>
-    <div class="notice-sub">
-      配信以外にオリ曲等も混在します（メンバー限定除く）
-    </div>
-    -->
+  <div class="header-note-bottom">
+    ※本ツールはYouTubeライブ一覧を元に作成されています  
+    配信以外にオリ曲等も混在します（メンバー限定除く）
   </div>
 
 </header>
@@ -399,6 +417,9 @@
 </details>
 
 <div class="list-header">
+  
+  <div id="message" style="margin:5px 0; font-size:12px;"></div>
+  
   <p>動画一覧</p>
   
   <details class="data-transfer">
@@ -424,10 +445,6 @@
   </thead>
   <tbody></tbody>
 </table>
-
-<div id="message" style="margin:5px 0; font-size:12px;"></div>
-
-<div id="message"></div>
   
 </body>
   
