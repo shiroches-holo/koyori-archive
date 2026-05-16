@@ -278,14 +278,7 @@
 </div>
 
 <!-- ✅ stats 横並びエリア -->
-<div id="stats"></div>
-
-<div class="stat-box">
-  <div class="label">達成率</div>
-  <div class="value" style="color:${rateColor}">
-    ${rate}%
-  </div>
-  
+<div id="stats"></div>  
   <div class="stat-box ${extraClass}">
 
   <div class="progress-bar">
@@ -401,28 +394,6 @@ function updateStats(filtered){
   let watched = 0;
   let totalSec = 0;
   let watchedSec = 0;
-  let extraClass = rateNum === 100 ? "completed" : "";
-
-  // 先に計算
-  const rate = total ? ((watched/total)*100).toFixed(1) : 0;
-  
-  // 数値化
-  let rateNum = parseFloat(rate);
-  
-  // 色決定
-  let rateColor = "#ff9fc1";
-  
-  if(rateNum >= 50) rateColor = "#ff6fa3";
-  if(rateNum >= 80) rateColor = "#ff3c7d";
-  if(rateNum === 100) rateColor = "#ff1493"; // 👑
-  
-  // 段階で色変化
-  if(rateNum >= 50) rateColor = "#ff6fa3";
-  if(rateNum >= 80) rateColor = "#ff3c7d";
-  if(rateNum === 100) rateColor = "#ff1493"; // 👑豪華ピンク
-  if(rateNum === 100){
-    rateColor = "#ff1493";
-  }
 
   filtered.forEach(x=>{
     totalSec += x.durationSec;
@@ -433,8 +404,20 @@ function updateStats(filtered){
     }
   });
 
+  // ✅ ここで計算
   const rate = total ? ((watched/total)*100).toFixed(1) : 0;
+  let rateNum = parseFloat(rate);
 
+  // ✅ 色
+  let rateColor = "#ff9fc1";
+  if(rateNum >= 50) rateColor = "#ff6fa3";
+  if(rateNum >= 80) rateColor = "#ff3c7d";
+  if(rateNum === 100) rateColor = "#ff1493";
+
+  // ✅ クラス
+  let extraClass = rateNum === 100 ? "completed" : "";
+
+  // ✅ 描画
   document.getElementById("stats").innerHTML = `
     <div class="stat-box">
       <div class="label">動画本数</div>
@@ -456,23 +439,16 @@ function updateStats(filtered){
       <div class="value">${formatTotal(watchedSec)}</div>
     </div>
 
-    <div class="stat-box">
+    <div class="stat-box ${extraClass}">
       <div class="label">達成率</div>
       <div class="value" style="color:${rateColor}">
         ${rate}%
       </div>
-    
+
       <div class="progress-bar">
         <div class="progress" style="width:${rate}%; background:${rateColor}"></div>
       </div>
     </div>
-
-    <!-- 動画本数と同じなので不要
-    <div class="stat-box">
-      <div class="label">表示件数</div>
-      <div class="value">${filtered.length}件</div>
-    </div>
-    -->
   `;
 }
 
