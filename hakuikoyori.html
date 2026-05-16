@@ -671,7 +671,13 @@ function render(){
       </td>
       <td class="time-cell">${formatDuration(item.durationSec)}</td>
       <td class="check-cell"><input type="checkbox" ${checked?"checked":""}></td>
-      <td>${item.playlistName}</td>
+      <td>
+      ${
+        item.playlistUrl
+          ? `<a href="${item.playlistUrl}" target="_blank">${item.playlistName}</a>`
+          : item.playlistName
+      }
+    </td>
     `;
 
     if(checked) tr.style.background="#e6ffe6";
