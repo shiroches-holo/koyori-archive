@@ -254,6 +254,10 @@
     border-radius: 10px;
     transition: width 0.4s ease;
   }
+
+  .stat-box.completed {
+    box-shadow: 0 0 12px rgba(255, 20, 147, 0.6);
+  }
   
 </style>
 
@@ -281,6 +285,8 @@
   <div class="value" style="color:${rateColor}">
     ${rate}%
   </div>
+  
+  <div class="stat-box ${extraClass}">
 
   <div class="progress-bar">
     <div class="progress" style="width:${rate}%; background:${rateColor}"></div>
@@ -395,15 +401,28 @@ function updateStats(filtered){
   let watched = 0;
   let totalSec = 0;
   let watchedSec = 0;
+  let extraClass = rateNum === 100 ? "completed" : "";
 
+  // 先に計算
+  const rate = total ? ((watched/total)*100).toFixed(1) : 0;
+  
+  // 数値化
   let rateNum = parseFloat(rate);
+  
+  // 色決定
   let rateColor = "#ff9fc1";
+  
+  if(rateNum >= 50) rateColor = "#ff6fa3";
+  if(rateNum >= 80) rateColor = "#ff3c7d";
+  if(rateNum === 100) rateColor = "#ff1493"; // 👑
   
   // 段階で色変化
   if(rateNum >= 50) rateColor = "#ff6fa3";
   if(rateNum >= 80) rateColor = "#ff3c7d";
   if(rateNum === 100) rateColor = "#ff1493"; // 👑豪華ピンク
-
+  if(rateNum === 100){
+    rateColor = "#ff1493";
+  }
 
   filtered.forEach(x=>{
     totalSec += x.durationSec;
@@ -439,7 +458,13 @@ function updateStats(filtered){
 
     <div class="stat-box">
       <div class="label">達成率</div>
-      <div class="value">${rate}%</div>
+      <div class="value" style="color:${rateColor}">
+        ${rate}%
+      </div>
+    
+      <div class="progress-bar">
+        <div class="progress" style="width:${rate}%; background:${rateColor}"></div>
+      </div>
     </div>
 
     <!-- 動画本数と同じなので不要
