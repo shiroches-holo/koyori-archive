@@ -141,9 +141,9 @@
   }
   
   #controls {
-    flex: 1;
-    position: sticky;
-    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   #stats {
@@ -336,9 +336,6 @@
     
     <button id="checkAll">表示を全部☑</button>
     <button id="uncheckAll">表示☑を全部解除</button>
-
-    <button id="toTop">🔼</button>
-    <button id="toBottom">🔽</button>
 
     <button id="resetAll">条件リセット</button>
 
@@ -659,10 +656,30 @@ fetch(url)
 
       area.appendChild(label);
 
+      // ✅ 先に集計
       const playlistCount = {};
-      
       data.forEach(item=>{
-        playlistCount[item.playlistName] = (playlistCount[item.playlistName] || 0) + 1;
+        playlistCount[item.playlistName] =
+          (playlistCount[item.playlistName] || 0) + 1;
+      });
+      
+      // ✅ セット
+      const set = new Set(data.map(x => x.playlistName));
+      
+      // ✅ 生成
+      set.forEach(p=>{
+        const label = document.createElement("label");
+        label.style.display = "block";
+      
+        label.innerHTML = `
+          <input type="checkbox" value="${p}" checked>
+          ${p} (${playlistCount[p] || 0})
+        `;
+      
+        const cb = label.querySelector("input");
+        cb.addEventListener("change", render);
+      
+        area.appendChild(label);
       });
       
     });
@@ -676,13 +693,10 @@ fetch(url)
       const keyword = document.getElementById("playlistSearch").value.toLowerCase();
     
       document.querySelectorAll("#playlistFilterArea label").forEach(label=>{
-        const text = label.textContent.toLowerCase();
-    
-        if(!keyword || text.includes(keyword)){
-          label.style.display = "block";
-        } else {
-          label.style.display = "none";
-        }
+        if(label.style.display === "none") return;
+      
+        const cb = label.querySelector("input");
+        cb.checked = true;
       });
     });
     document.getElementById("filterStatus").addEventListener("change", render);
@@ -765,10 +779,18 @@ fetch(url)
         cb.checked = true;
       });
 
-      document.querySelector("#playlistBox summary").textContent =
-        `再生リスト選択 (${set.size})`;
+      function updatePlaylistCount(){
+        const total = document.querySelectorAll("#playlistFilterArea input").length;
+        const checked = document.querySelectorAll("#playlistFilterArea input:checked").length;
+      
+        document.querySelector("#playlistBox summary").textContent =
+          `再生リスト選択 (${checked}/${total})`;
+      }
+
+      updatePlaylistCount();
       
       render();
+      
     });
     
     /* --- データ移行 --- */
