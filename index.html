@@ -460,7 +460,11 @@ function render(){
 
     tr.innerHTML = `
       <td>${formatDate(item.publishedAt)}</td>
-      <td><a href="https://www.youtube.com/watch?v=${item.videoId}" target</td>
+      <td>
+        <a href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank">
+          ${item.title}
+        </a>
+      </td>
       <td class="time-cell">${formatDuration(item.durationSec)}</td>
       <td class="check-cell"><input type="checkbox" ${checked?"checked":""}></td>
       <td>${item.playlistName}</td>
