@@ -256,10 +256,9 @@
   }
 
   .stat-box.completed {
-    box-shadow: 0 0 12px rgba(255, 20, 147, 0.6);
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.8);
   }
-  
-</style>
+  </style>
 
 </head>
 
@@ -397,23 +396,24 @@ function updateStats(filtered){
 
   filtered.forEach(x=>{
     totalSec += x.durationSec;
-
+  
     if(localStorage.getItem(x.videoId)==="true"){
       watched++;
       watchedSec += x.durationSec;
     }
   });
-
-  // ✅ ここで計算
+  
+  // ✅ 計算は最後
   const rate = total ? ((watched/total)*100).toFixed(1) : 0;
   let rateNum = parseFloat(rate);
-
+  
   // ✅ 色
-  let rateColor = "#ff9fc1";
-  if(rateNum >= 50) rateColor = "#ff6fa3";
+  let rateColor = "#333";
+  if(rateNum >= 30) rateColor = "#ff9fc1";
+  if(rateNum >= 60) rateColor = "#ff6fa3";
   if(rateNum >= 80) rateColor = "#ff3c7d";
-  if(rateNum === 100) rateColor = "#ff1493";
-
+  if(rateNum === 100) rateColor = "#d4af37"; // 👑
+  
   // ✅ クラス
   let extraClass = rateNum === 100 ? "completed" : "";
 
