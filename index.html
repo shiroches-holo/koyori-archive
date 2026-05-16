@@ -1,7 +1,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>博衣こより配信一覧</title>
+  <title>博衣こより動画一覧</title>
 
 <style>
   /*
@@ -308,6 +308,8 @@
     <div class="notice">※非公式ファンメイドツールです</div>
     <div class="notice-sub">
       ※本ツールはYouTubeライブ一覧を元に作成されています  
+    </div>
+    <div class="notice-sub">
       配信以外にオリ曲等も混在します（メンバー限定除く）
     </div>
   </div>
@@ -393,6 +395,9 @@
     <button id="exportBtn">エクスポート</button>
     <button id="importBtn">インポート</button>
     <input type="file" id="importFile" style="display:none">
+    <div class="notice">
+        ※データは端末のブラウザ毎に保存されます
+    </div>
   </details>
 </div>
   
@@ -421,12 +426,18 @@ let data = [];
 // 日付
 function formatDate(d){
   const date = new Date(d);
+
+  const days = ["日","月","火","水","木","金","土"];
+
   const y = date.getFullYear();
   const m = date.getMonth()+1;
   const day = date.getDate();
+  const w = days[date.getDay()];
+
   const h = date.getHours();
   const min = date.getMinutes().toString().padStart(2,'0');
-  return `${y}/${m}/${day} ${h}:${min}`;
+
+  return `${y}/${m}/${day}(${w}) ${h}:${min}`;
 }
 
 // 時間
