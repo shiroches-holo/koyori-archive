@@ -597,6 +597,14 @@ function render(){
   updateStats(filtered);
 }
 
+function updatePlaylistCount(){
+  const total = document.querySelectorAll("#playlistFilterArea input").length;
+  const checked = document.querySelectorAll("#playlistFilterArea input:checked").length;
+
+  document.querySelector("#playlistBox summary").textContent =
+    `再生リスト選択 (${checked}/${total})`;
+}
+
 /* document.getElementById("stats").textContent = "読み込み中..."; */
 /*
 document.getElementById("stats").innerHTML = `
@@ -656,17 +664,19 @@ fetch(url)
 
       area.appendChild(label);
 
-      // ✅ 先に集計
+      // ✅ 再生リスト集計
       const playlistCount = {};
       data.forEach(item=>{
         playlistCount[item.playlistName] =
           (playlistCount[item.playlistName] || 0) + 1;
       });
       
-      // ✅ セット
+      // ✅ 一覧生成
       const set = new Set(data.map(x => x.playlistName));
+      const area = document.getElementById("playlistFilterArea");
       
-      // ✅ 生成
+      area.innerHTML = ""; // 初期化
+      
       set.forEach(p=>{
         const label = document.createElement("label");
         label.style.display = "block";
@@ -677,7 +687,10 @@ fetch(url)
         `;
       
         const cb = label.querySelector("input");
-        cb.addEventListener("change", render);
+        cb.addEventListener("change", ()=>{
+          updatePlaylistCount();
+          render();
+        });
       
         area.appendChild(label);
       });
@@ -693,10 +706,13 @@ fetch(url)
       const keyword = document.getElementById("playlistSearch").value.toLowerCase();
     
       document.querySelectorAll("#playlistFilterArea label").forEach(label=>{
-        if(label.style.display === "none") return;
-      
-        const cb = label.querySelector("input");
-        cb.checked = true;
+        const text = label.textContent.toLowerCase();
+    
+        if(!keyword || text.includes(keyword)){
+          label.style.display = "block";
+        } else {
+          label.style.display = "none";
+        }
       });
     });
     document.getElementById("filterStatus").addEventListener("change", render);
@@ -778,14 +794,6 @@ fetch(url)
         const cb = label.querySelector("input");
         cb.checked = true;
       });
-
-      function updatePlaylistCount(){
-        const total = document.querySelectorAll("#playlistFilterArea input").length;
-        const checked = document.querySelectorAll("#playlistFilterArea input:checked").length;
-      
-        document.querySelector("#playlistBox summary").textContent =
-          `再生リスト選択 (${checked}/${total})`;
-      }
 
       updatePlaylistCount();
       
