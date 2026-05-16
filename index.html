@@ -92,15 +92,12 @@
     background: linear-gradient(
       to bottom,
       #ffc0d6 0%,
-      #ffe4ec 60%,
-      #fff5f8 100%
+      #ffd6e5 40%,
+      #fff3f7 100%
     );
   
     border-bottom: 2px solid #ff9fc1;
-    padding: 14px 18px;
-    margin-bottom: 15px;
-  
-    box-shadow: 0 4px 10px rgba(255, 150, 180, 0.2);
+    box-shadow: 0 4px 12px rgba(255, 150, 180, 0.25);
   }
   
     border-bottom: 2px solid #ff9fc1;
@@ -314,12 +311,47 @@
   }
 
   #message {
-    margin: 8px 0;
-    padding: 8px 12px;
-    background: #fff;
-    border-radius: 8px;
-    font-size: 13px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+  
+    padding: 14px 22px;
+    font-size: 14px;
+    font-weight: bold;
+  
+    background: white;
+    border-radius: 12px;
+  
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  
+    opacity: 0;
+    pointer-events: none;
+  
+    transition: all 0.25s ease;
+  
+    z-index: 1000;
+  }
+  
+  /* 表示状態 */
+  #message.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  @keyframes pop {
+    from {
+      transform: translate(-50%, -40%) scale(0.8);
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+  }
+  
+  #message.show {
+    animation: pop 0.25s ease;
   }
   
 </style>
