@@ -95,13 +95,8 @@
       #ffe4ec,
       #fff0f5
       */
-      135deg,
-      #ffe4ec,
-      #ffd6e5
-      /*
       #ffc0d6,
       #ffe4ec
-      */
     );
   
     border-bottom: 2px solid #ff9fc1;
@@ -320,14 +315,27 @@
       <option value="short">時間（短い順）</option>
     </select>
 
+    <select id="durationLimit">
+      <option value="">全て</option>
+      <option value="30">30分以内</option>
+      <option value="60">1時間以内</option>
+      <option value="120">2時間以内</option>
+      <option value="180">3時間以内</option>
+      <option value="240">4時間以内</option>
+      <option value="300">5時間以内</option>
+      <option value="360">6時間以内</option>
+      <option value="420">7時間以内</option>
+      <option value="480">8時間以内</option>
+      <option value="540">9時間以内</option>
+      <option value="600">10時間以内</option>
+      <option value="660">11時間以内</option>
+      <option value="720">12時間以内</option>
+    </select>
+
     <input type="date" id="dateFrom">
     ～
     <input type="date" id="dateTo">
     
-    <input type="number" id="durMin" placeholder="最小(分)">
-    ～
-    <input type="number" id="durMax" placeholder="最大(分)">
-
     <button id="checkAll">表示を全部☑</button>
     <button id="uncheckAll">表示☑を全部解除</button>
 
