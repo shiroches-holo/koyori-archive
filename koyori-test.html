@@ -99,8 +99,17 @@
     background: #e3e8ef;
   }
   
-  .time-cell {
+  .time-cell {    
     text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums; /* ←数字揃う */
+  }
+
+  td:last-child {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
   .check-cell {
@@ -130,6 +139,7 @@
   
   .controls-left {
     flex: 1;
+    flex-wrap: nowrap; /* ←1列固定 */
   }
   
   .controls-right {
