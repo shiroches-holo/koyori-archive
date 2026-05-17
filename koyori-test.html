@@ -124,7 +124,7 @@
   }
 
   /* スマホ表示 */
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
 
     #stats {
       display: grid;
@@ -139,7 +139,7 @@
   }
 
   /* スマホ表示の時のフォントサイズ変更*/
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
 
     .stat-box .value {
       font-size: 22px;
@@ -152,7 +152,7 @@
   }
 
   /* スマホ表示のときの達成率の表示大きく*/
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
 
     .stat-box:nth-child(5) {
       grid-column: span 2;
@@ -406,7 +406,7 @@
     margin-bottom: 6px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
     .card .title {
       font-size: 15px;
       line-height: 1.4;
@@ -418,7 +418,7 @@
   }
 
   /* コントロール全体をスマホ最適化 */
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
     #controls {
       flex-direction: column;
       align-items: stretch;
@@ -437,7 +437,7 @@
   }
 
   /* スマホで入力系を大きく*/
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
     input, select, button {
       font-size: 16px;
       padding: 10px;
@@ -463,7 +463,7 @@
     font-size: 13px;
   }
   
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
     .view-toggle {
       font-size: 14px;
       justify-content: flex-end;
@@ -536,7 +536,7 @@
       <option value="420">7時間以内</option>
       <option value="480">8時間以内</option>
       <option value="540">9時間以内</option>
-      <option value="600">10時間以内</option>
+      <option value="800">10時間以内</option>
       <option value="660">11時間以内</option>
       <option value="720">12時間以内</option>
     </select>
@@ -619,7 +619,7 @@ function getViewMode(){
   if(mode === "card") return "card";
 
   // auto
-  return window.innerWidth <= 600 ? "card" : "table";
+  return window.innerWidth <= 800 ? "card" : "table";
 }
   
 // 日付
@@ -641,8 +641,8 @@ function formatDate(d){
 
 // 時間
 function formatDuration(sec){
-  const h = Math.floor(sec/3600);
-  const m = Math.floor((sec%3600)/60);
+  const h = Math.floor(sec/3800);
+  const m = Math.floor((sec%3800)/60);
   const s = sec%60;
 
   return (h?`${h}時間`:"")+(m?`${m}分`:"")+(s?`${s}秒`:"");
@@ -726,8 +726,8 @@ function updateStats(filtered){
 }
 
 function formatTotal(sec){
-  const h = Math.floor(sec / 3600);
-  const m = Math.floor((sec % 3600) / 60);
+  const h = Math.floor(sec / 3800);
+  const m = Math.floor((sec % 3800) / 60);
   return `${h}時間${m}分`;
 }
 
@@ -762,8 +762,9 @@ function render(){
       document.querySelectorAll("#playlistFilterArea input:checked")
     ).map(cb => cb.value);
 
-    if(checkedPlaylists.length === 0) return false;
-    if(!checkedPlaylists.includes(item.playlistName)) return false;
+    if(checkedPlaylists.length > 0){
+      if(!checkedPlaylists.includes(item.playlistName)) return false;
+    }
 
     // 視聴状態
     const watched = localStorage.getItem(item.videoId) === "true";
@@ -882,7 +883,7 @@ function getViewMode(){
   }
 
   // 初期は自動
-  return window.innerWidth <= 600 ? "card" : "table";
+  return window.innerWidth <= 800 ? "card" : "table";
 }
 
 // メーセージボックス
