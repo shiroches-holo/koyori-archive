@@ -349,6 +349,20 @@
   #message.show {
     animation: pop 0.25s ease;
   }
+
+  .card {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+  
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  }
+  
+  .card .title {
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
   
 </style>
 
@@ -385,6 +399,14 @@
 
 <!-- ✅ controls は1個だけ -->
 <div id="controls">
+
+  <!-- PCとスマホでUI変更 -->
+  <select id="viewMode">
+    <option value="auto">自動</option>
+    <option value="table">テーブル</option>
+    <option value="card">カード</option>
+  </select>
+  
   <div class="controls-left">
 
     <input type="text" id="search" placeholder="タイトル検索">
@@ -483,6 +505,17 @@ const url = "https://script.google.com/macros/s/AKfycby35nCN7uhqkTvMhTmb52O33xHx
 
 let data = [];
 
+// PCとスマホの判定
+function getViewMode(){
+  const mode = document.getElementById("viewMode").value;
+
+  if(mode === "table") return "table";
+  if(mode === "card") return "card";
+
+  // auto
+  return window.innerWidth <= 600 ? "card" : "table";
+}
+  
 // 日付
 function formatDate(d){
   const date = new Date(d);
@@ -603,7 +636,7 @@ function updatePlaylistCount(){
     `再生リスト選択 (${checked}/${total})`;
 }
 
-// -------------------- 描画 --------------------
+// -------------------- 描画(render) --------------------
 
 function render(){
   const tbody = document.querySelector("#list tbody");
@@ -655,45 +688,78 @@ function render(){
   if(sort==="long") filtered.sort((a,b)=>b.durationSec-a.durationSec);
   if(sort==="short") filtered.sort((a,b)=>a.durationSec-b.durationSec);
 
+  const viewMode = getViewMode();
+  
   // 描画
+  const viewMode = getViewMode();
+  
   filtered.forEach(item=>{
-    const tr=document.createElement("tr");
+    const tr = document.createElement("tr");
     tr.dataset.id = item.videoId;
-
+  
     const checked = localStorage.getItem(item.videoId)==="true";
-
-    tr.innerHTML = `
-      <td>${formatDate(item.publishedAt)}</td>
-      <td>
-        <a href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank">
-          ${item.title}
-        </a>
-      </td>
-      <td class="time-cell">${formatDuration(item.durationSec)}</td>
-      <td class="check-cell"><input type="checkbox" ${checked?"checked":""}></td>
-      <td>
-      ${
-        item.playlistUrl
-          ? `<a href="${item.playlistUrl}" target="_blank">${item.playlistName}</a>`
-          : item.playlistName
-      }
-    </td>
-    `;
-
+  
+    if(viewMode === "card"){
+  
+      tr.innerHTML = `
+        <td colspan="5">
+          <div class="card">
+  
+            <div class="title">
+              <a href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank">
+                ${item.title}
+              </a>
+            </div>
+  
+            <div>📅 ${formatDate(item.publishedAt)}</div>
+            <div>⏱ ${formatDuration(item.durationSec)}</div>
+  
+            <div>
+              ☑ <input type="checkbox" ${checked?"checked":""}>
+            </div>
+  
+            <div>
+              🎵 ${item.playlistName}
+            </div>
+  
+          </div>
+        </td>
+      `;
+  
+    } else {
+  
+      tr.innerHTML = `
+        <td>${formatDate(item.publishedAt)}</td>
+        <td>
+          <a href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank">
+            ${item.title}
+          </a>
+        </td>
+        <td class="time-cell">${formatDuration(item.durationSec)}</td>
+        <td class="check-cell">
+          <input type="checkbox" ${checked?"checked":""}>
+        </td>
+        <td>
+          ${
+            item.playlistUrl
+              ? `<a href="${item.playlistUrl}" target="_blank">${item.playlistName}</a>`
+              : item.playlistName
+          }
+        </td>
+      `;
+    }
+  
     if(checked) tr.style.background="#e6ffe6";
-
+  
     const cb = tr.querySelector("input");
     cb.addEventListener("change", ()=>{
       localStorage.setItem(item.videoId, cb.checked);
       render();
     });
-
+  
     tbody.appendChild(tr);
   });
 
-  updateStats(filtered);
-  updatePlaylistCount();
-}
  
   function showMessage(text, type="success"){
     const el = document.getElementById("message");
@@ -753,8 +819,22 @@ fetch(url)
       area.appendChild(label);
     });
 
+    // PCとスマホの表示変更
+    const viewMode = getViewMode();
+
+    filtered.forEach(item => {
+    
+      if(viewMode === "card"){
+        // カード表示
+      } else {
+        // テーブル表示（今のまま）
+      }
+    
+    });
+
     // ✅ イベント
 
+    document.getElementById("viewMode").addEventListener("change", render); //PCとスマホの表示
     document.getElementById("search").addEventListener("input", render);
     document.getElementById("filterStatus").addEventListener("change", render);
     document.getElementById("sort").addEventListener("change", render);
