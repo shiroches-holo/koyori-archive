@@ -215,7 +215,7 @@
   }
   
   #playlistFilterArea {
-    font-size:18px
+    font-size:18px;
     max-height: 150px;
     overflow-y: auto;
     border: 1px solid #ccc;
@@ -543,7 +543,12 @@ function autoViewMode(){
 
   document.querySelector(`input[name="view"][value="${target}"]`).checked = true;
 }
-  
+
+function getViewMode(){
+  const selected = document.querySelector('input[name="view"]:checked');
+  return selected ? selected.value : "table";
+}
+
 // 日付
 function formatDate(d){
   const date = new Date(d);
