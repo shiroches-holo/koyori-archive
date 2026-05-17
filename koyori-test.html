@@ -318,9 +318,6 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-    }
-  
-    .controls-left > * {
       width: 100%;
     }
     
@@ -449,6 +446,12 @@
     <input type="date" id="dateFrom">
     ～
     <input type="date" id="dateTo">
+
+    <div class="btn-group">
+      <button id="checkAll">表示を全部☑</button>
+      <button id="uncheckAll">表示☑を全部解除</button>
+      <button id="resetAll">条件リセット</button>
+    </div>
     
     <button id="checkAll">表示を全部☑</button>
     <button id="uncheckAll">表示☑を全部解除</button>
@@ -471,12 +474,6 @@
   <button id="playlistAll">全て✔</button>
   <button id="playlistClear">全て解除</button>
 </details>
-
-<div class="btn-group">
-  <button id="checkAll">表示を全部☑</button>
-  <button id="uncheckAll">表示☑を全部解除</button>
-  <button id="resetAll">条件リセット</button>
-</div>
 
 <div class="list-header">
   
