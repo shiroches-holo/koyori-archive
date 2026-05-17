@@ -342,6 +342,10 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
     }
+    .controls-left span {
+      text-align: center;
+      line-height: 40px;
+    }
   
     /* ---------- 入力UI ---------- */
     input, select, button {
@@ -444,7 +448,7 @@
     </select>
 
     <input type="date" id="dateFrom">
-    ～
+    <span>～</span>
     <input type="date" id="dateTo">
 
     <div class="btn-group">
@@ -452,11 +456,6 @@
       <button id="uncheckAll">表示☑を全部解除</button>
       <button id="resetAll">条件リセット</button>
     </div>
-    
-    <button id="checkAll">表示を全部☑</button>
-    <button id="uncheckAll">表示☑を全部解除</button>
-
-    <button id="resetAll">条件リセット</button>
 
   </div>
 
