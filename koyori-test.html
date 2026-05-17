@@ -639,9 +639,6 @@ function updatePlaylistCount(){
 // -------------------- 描画(render) --------------------
 
 function render(){
-  const tbody = document.querySelector("#list tbody");
-  tbody.innerHTML = "";
-
   const keyword = document.getElementById("search").value.toLowerCase();
   const status = document.getElementById("filterStatus").value;
   const sort = document.getElementById("sort").value;
@@ -691,6 +688,9 @@ function render(){
   // 描画
   const viewMode = getViewMode();
   
+  const thead = document.querySelector("#list thead");
+  thead.style.display = (viewMode === "card") ? "none" : "";
+
   filtered.forEach(item=>{
     const tr = document.createElement("tr");
     tr.dataset.id = item.videoId;
@@ -759,8 +759,8 @@ function render(){
   
     tbody.appendChild(tr);
   });
- 
-  function showMessage(text, type="success"){
+}
+function showMessage(text, type="success"){
     const el = document.getElementById("message");
   
     el.textContent = text;
@@ -778,7 +778,9 @@ function render(){
     setTimeout(()=>{
       el.classList.remove("show");
     }, 2000);
-  }
+}
+
+
 
 // -------------------- 初期読み込み --------------------
 
