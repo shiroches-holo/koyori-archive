@@ -750,8 +750,8 @@ function updateStats(filtered){
 }
 
 function formatTotal(sec){
-  const h = Math.floor(sec / 3800);
-  const m = Math.floor((sec % 3800) / 60);
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
   return `${h}時間${m}分`;
 }
 
@@ -963,8 +963,6 @@ fetch(url)
     });
 
     // ✅ イベント
-
-    document.getElementById("viewMode").addEventListener("change", render); //PCとスマホの表示
     document.querySelectorAll('input[name="view"]').forEach(el=>{
       el.addEventListener("change", render);
     });
