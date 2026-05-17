@@ -10,6 +10,15 @@
     font-family: sans-serif;
   }
   */
+  
+  /* タイトル */
+  h1 {
+    font-size: 22px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* ←はみ出し対策 */
+  }
+  
   body {
     background: #fff6f9; /* 少し薄くする */
   }
@@ -138,11 +147,11 @@
   @media (max-width: 1000px) {
     
     h1 {
-        font-size: 24px;
+        font-size: 40px;
       }
     
       .card .title {
-        font-size: 18px;
+        font-size: 30px;
         line-height: 1.5;
       }
 
@@ -434,19 +443,8 @@
   }
 
   @media (max-width: 1000px) {
-    .card .title {
-      font-size: 15px;
-      line-height: 1.4;
-    }
-    .card {
-      font-size: 16px;
-      padding: 12px;
-    }
-    @media (max-width: 1000px) {
-      input[type="checkbox"] {
-        transform: scale(1.5);
-      }
-    }
+    input[type="checkbox"] {
+      transform: scale(1.5);
   }
 
   /* コントロール全体をスマホ最適化 */
@@ -518,14 +516,6 @@
     position: absolute;
     right: 12px;
     bottom: 12px;
-  }
-
-  /* タイトル */
-  h1 {
-    font-size: 22px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* ←はみ出し対策 */
   }
   
 </style>
@@ -894,11 +884,16 @@ function render(){
             <div>
             🎵 ${
               item.playlistUrl
-                ? `${item.playlistUrl}${item.playlistName}</a>`
+                ? `<a href="${item.playlistUrl}" target="_blank">${item.playlistName}</a>`
                 : item.playlistName
-              }
+            }
             </div>
   
+            <!-- 視聴済み✅ -->
+            <div class="check-area">
+              ☑ <input type="checkbox" ${checked?"checked":""}>
+            </div>
+
           </div>
         </td>
       `;
