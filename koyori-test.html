@@ -34,13 +34,45 @@
   }
 
   .header-row {
-    flex-direction: column;
-    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* ←これに変える */
   }
   
   .header-note-top {
-    margin-left: auto; /* ←これで右端固定 */
+    font-size: 12px;
+    white-space: nowrap; /* ←折り返し防止 */
   }
+
+  /* 読み込み中 */
+  #loading {
+    backdrop-filter: blur(2px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* ←縦中央 */
+    align-items: center;     /* ←横中央 */
+  
+    background: rgba(255,255,255,0.8);
+    z-index: 999;
+  
+    font-size: 18px;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 5px solid #ccc;
+    border-top: 5px solid #ff9fc1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+  }  
   
   /* ---------- テーブル ---------- */
   table {
@@ -171,6 +203,12 @@
     align-items: center;
     margin-top: 10px;
   }
+
+  .list-header p {
+    margin: 0;
+    font-weight: bold;
+  }
+
   
   /* =========================================
      📱 スマホ専用スタイル（ここから）
@@ -189,7 +227,7 @@
   
     /* ---------- ヘッダー ---------- */  
     h1 {
-      font-size: 26px;
+      font-size: 34px;
       white-space: normal; /* ← 改行OK */
     }
   
@@ -489,42 +527,80 @@ function updateStats(filtered){
   let extraClass = rateNum === 100 ? "completed" : "";
 
   // ✅ 描画
+  const isMobile = window.innerWidth <= 1000;
+
   document.getElementById("stats").innerHTML = `
+  
+    <!-- 動画本数 -->
     <div class="stat-box">
-      <div class="label">動画本数</div>
-      <div class="value">${total}本</div>
+      ${
+        isMobile
+          ? `<div class="value">動画本数：${total}本</div>`
+          : `
+            <div class="label">動画本数</div>
+            <div class="value">${total}本</div>
+          `
+      }
     </div>
-
+  
+    <!-- 動画時間 -->
     <div class="stat-box">
-      <div class="label">動画時間</div>
-      <div class="value">${formatTotal(totalSec)}</div>
-      <div class="sub">${formatDays(totalSec)}</div>
+      ${
+        isMobile
+          ? `<div class="value">動画時間：${formatTotal(totalSec)}（${formatDays(totalSec)}）</div>`
+          : `
+            <div class="label">動画時間</div>
+            <div class="value">${formatTotal(totalSec)}</div>
+            <div class="sub">${formatDays(totalSec)}</div>
+          `
+      }
     </div>
-
+  
+    <!-- 視聴済 -->
     <div class="stat-box">
-      <div class="label">視聴済</div>
-      <div class="value">${watched}本</div>
+      ${
+        isMobile
+          ? `<div class="value">視聴済：${watched}本</div>`
+          : `
+            <div class="label">視聴済</div>
+            <div class="value">${watched}本</div>
+          `
+      }
     </div>
-
+  
+    <!-- 視聴時間 -->
     <div class="stat-box">
-      <div class="label">視聴時間</div>
-      <div class="value">${formatTotal(watchedSec)}</div>
-      <div class="sub">${formatDays(watchedSec)}</div>
+      ${
+        isMobile
+          ? `<div class="value">視聴時間：${formatTotal(watchedSec)}（${formatDays(watchedSec)}）</div>`
+          : `
+            <div class="label">視聴時間</div>
+            <div class="value">${formatTotal(watchedSec)}</div>
+            <div class="sub">${formatDays(watchedSec)}</div>
+          `
+      }
     </div>
-
+  
+    <!-- 達成率 -->
     <div class="stat-box ${extraClass}">
-      <div class="label">達成率</div>
-      <div class="value" style="color:${rateColor}">
-        ${rate}%
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress" style="width:${rate}%; background:${rateColor}"></div>
-      </div>
+      ${
+        isMobile
+          ? `<div class="value" style="color:${rateColor}">
+              達成率：${rate}%
+            </div>`
+          : `
+            <div class="label">達成率</div>
+            <div class="value" style="color:${rateColor}">
+              ${rate}%
+            </div>
+            <div class="progress-bar">
+              <div class="progress" style="width:${rate}%; background:${rateColor}"></div>
+            </div>
+          `
+      }
     </div>
+  
   `;
-}
-
 function formatTotal(sec){
   const h = Math.floor(sec / 3600);
   const m = Math.floor((sec % 3600) / 60);
