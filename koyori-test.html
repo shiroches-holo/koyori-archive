@@ -234,6 +234,34 @@
     font-weight: bold;
   }
 
+  /* ---------- メッセージ ---------- */
+  #message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+  
+    padding: 14px 22px;
+    font-size: 14px;
+    font-weight: bold;
+  
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  
+    opacity: 0;
+    pointer-events: none;
+  
+    transition: all 0.25s ease;
+    z-index: 1000;
+  }
+  
+  /* 表示時 */
+  #message.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
   
   /* =========================================
      📱 スマホ専用スタイル（ここから）
@@ -300,7 +328,14 @@
     #checkAll,
     #uncheckAll,
     #resetAll {
-      grid-column: span 2;
+      /* grid-column: span 2; */
+      grid-column: span 1; /* ← 横並びに戻す */
+    }
+     /* 3等分 */
+    .controls-left {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
     }
   
     /* ---------- 入力UI ---------- */
@@ -725,7 +760,14 @@ function render(){
       tr.innerHTML = `
         <td colspan="5">
           <div class="card">
-  
+
+            <!-- サムネ -->
+            <div class="thumb">
+                <img src="https://img.youtube.com/vi/${item.videoId}/mqdefault.jpg">
+            </div>
+            
+            <div class="card-content">
+
             <div class="title">
               <a href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank">
                 ${item.title}
