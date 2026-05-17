@@ -207,6 +207,12 @@
     box-shadow: 0 3px 8px rgba(0,0,0,0.08);
     position: relative;
   }
+
+  /* ホバーで浮く */
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  }
   
   .card .title {
     font-weight: bold;
@@ -279,6 +285,21 @@
     transform: translate(-50%, -50%) scale(1);
   }
 
+  /* =========================================
+     💻️ PC専用
+  ========================================= */
+  
+  @media (min-width: 1001px) {
+
+    .controls-left {
+      display: flex;
+      flex: 1;
+      flex-wrap: nowrap; /* ←1列固定 */
+      gap: 8px;
+      align-items: center;
+    }
+  
+  }
   
   /* =========================================
      📱 スマホ専用スタイル（ここから）
