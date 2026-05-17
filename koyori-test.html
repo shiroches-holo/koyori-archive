@@ -687,9 +687,7 @@ function render(){
   if(sort==="old") filtered.sort((a,b)=>new Date(a.publishedAt)-new Date(b.publishedAt));
   if(sort==="long") filtered.sort((a,b)=>b.durationSec-a.durationSec);
   if(sort==="short") filtered.sort((a,b)=>a.durationSec-b.durationSec);
-
-  const viewMode = getViewMode();
-  
+ 
   // 描画
   const viewMode = getViewMode();
   
@@ -702,6 +700,8 @@ function render(){
     if(viewMode === "card"){
   
       tr.innerHTML = `
+      const thead = document.querySelector("#list thead");
+      thead.style.display = (viewMode === "card") ? "none" : "";
         <td colspan="5">
           <div class="card">
   
@@ -759,7 +759,6 @@ function render(){
   
     tbody.appendChild(tr);
   });
-
  
   function showMessage(text, type="success"){
     const el = document.getElementById("message");
@@ -817,19 +816,6 @@ fetch(url)
       });
 
       area.appendChild(label);
-    });
-
-    // PCとスマホの表示変更
-    const viewMode = getViewMode();
-
-    filtered.forEach(item => {
-    
-      if(viewMode === "card"){
-        // カード表示
-      } else {
-        // テーブル表示（今のまま）
-      }
-    
     });
 
     // ✅ イベント
