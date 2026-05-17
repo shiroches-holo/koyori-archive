@@ -463,9 +463,8 @@
       <option value="720">12時間以内</option>
     </select>
 
-    <div class="range-group">
+    <div class="range-group">    
       <select id="durationLimit">...</select>
-    
       <input type="date" id="dateFrom">
       <span>～</span>
       <input type="date" id="dateTo">
@@ -544,10 +543,12 @@ const url = "https://script.google.com/macros/s/AKfycby35nCN7uhqkTvMhTmb52O33xHx
 
 let data = [];
 
-// PCとスマホの判定
-function getViewMode(){
-  const selected = document.querySelector('input[name="view"]:checked');
-  return selected ? selected.value : "table";
+// 初期表示を自動判定
+function autoViewMode(){
+  const isMobile = window.innerWidth <= 1000;
+  const target = isMobile ? "card" : "table";
+
+  document.querySelector(`input[name="view"][value="${target}"]`).checked = true;
 }
   
 // 日付
@@ -894,6 +895,9 @@ fetch(url)
   .then(r=>r.json())
   .then(json=>{
     data = json;
+
+    autoViewMode(); // 初期表示自動判定
+    
     document.getElementById("loading").style.display="none";
 
     const area = document.getElementById("playlistFilterArea");
