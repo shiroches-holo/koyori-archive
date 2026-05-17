@@ -1,0 +1,902 @@
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>博衣こより動画一覧</title>
+
+<style>
+  /*
+  body {
+    background: #f5f7fa;
+    font-family: sans-serif;
+  }
+  */
+  body {
+    background: #fff6f9; /* 少し薄くする */
+  }
+
+  table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+  
+    box-shadow: 0 6px 16px rgba(255, 160, 180, 0.2);
+  }
+
+  th, td {
+    border: 1px solid black;
+  }
+
+  th {
+    background: #e3e8ef;
+    padding: 6px;
+    font-weight: bold;
+  }
+  td {
+    padding: 6px;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #e3e8ef;
+  }
+
+  .time-cell {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .check-cell {
+    text-align: center;
+  }
+
+  #controls {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(255, 160, 180, 0.2);
+  }
+  
+  .controls-left {
+    flex: 1;
+  }
+
+  .controls-right {
+    text-align: right;
+  }
+  
+  .controls-right button {
+    margin-left: 6px;
+  }
+  
+  .controls-right details {
+    margin-top: 4px;
+  }
+
+  tr:hover {
+    background: #fff0f5;
+  }
+
+  #playlistFilterArea {
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 5px;
+    background: #fafafa;
+  }
+  
+  header {
+    background: linear-gradient(
+      to bottom,
+      #ffc0d6 0%,
+      #ffd6e5 40%,
+      #fff3f7 100%
+    );
+  
+    border-bottom: 2px solid #ff9fc1;
+    padding: 12px 16px;
+    margin-bottom: 15px;
+  
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  }
+
+  /* 縦並び
+  #stats {
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    width: fit-content;
+    margin-bottom: 10px;
+  
+    box-shadow: 0 4px 10px rgba(255, 160, 180, 0.2);
+  }
+  */
+
+  /* 横並び */
+  #stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+  
+    box-shadow: 0 6px 16px rgba(255, 150, 180, 0.25);
+  }
+
+  .top-area {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  
+  #controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  
+  .stat-box {
+    background: white;
+    border-radius: 12px;
+    padding: 12px 16px;
+    min-width: 140px;
+  
+    box-shadow: 0 4px 10px rgba(255, 150, 180, 0.2);
+
+    animation: fadeUp 0.4s ease;  /*ページを開いた時にカードがポンと表示される*/
+  }
+
+  /*アニメーション*/
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .stat-box .label {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 4px;
+  }
+  
+  .stat-box .value {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .stat-box:nth-child(5) {
+    /*background: #ffe4ec;*/
+    background: white;
+  }
+
+  .stat-box:hover {
+    transform: translateY(-2px);
+    transition: 0.2s;
+  }
+
+  .stat-box .sub {
+    font-size: 11px;
+    color: #888;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .notice,
+  .notice-sub 
+  {
+    font-size: 11px;
+    color: #666;
+  }
+  
+  .notice-area {
+    text-align: right;
+  }
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .header-note-top {
+    font-size: 11px;
+    color: #666;
+  }
+  
+  .header-note-bottom {
+    text-align: right;
+    font-size: 11px;
+    color: #777;
+    margin-top: 2px;
+  }
+
+  #loading {
+    position: fixed;  /* ← これが超重要 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  
+    background: rgba(255,255,255,0.8);
+    z-index: 999;
+  
+    font-size: 18px;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 5px solid #ccc;
+    border-top: 5px solid #ff9fc1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #eee;
+    border-radius: 10px;
+    margin-top: 6px;
+  }
+  
+  .progress {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.4s ease;
+  }
+
+  .stat-box.completed {
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.8);
+  }
+
+  .list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .list-header p {
+    margin: 0;
+    font-weight: bold;
+  }
+
+  .data-transfer {
+    text-align: right;
+  }
+
+  #message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+  
+    padding: 14px 22px;
+    font-size: 14px;
+    font-weight: bold;
+  
+    background: white;
+    border-radius: 12px;
+  
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  
+    opacity: 0;
+    pointer-events: none;
+  
+    transition: all 0.25s ease;
+  
+    z-index: 1000;
+  }
+  
+  /* 表示状態 */
+  #message.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  @keyframes pop {
+    from {
+      transform: translate(-50%, -40%) scale(0.8);
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+  }
+  
+  #message.show {
+    animation: pop 0.25s ease;
+  }
+  
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+  <div class="header-row">
+    <h1>博衣こより🧪 アーカイブ視聴チェッカー</h1>
+
+    <div class="header-note-top">
+      ※非公式ファンメイドサイト
+    </div>
+  </div>
+  <!--
+  <div class="header-note-bottom">
+    ※本ツールはYouTubeライブ一覧を元に作成されています  
+  </div>
+  <div class="header-note-bottom">
+    配信以外にオリ曲等も混在します（メンバー限定除く）
+  </div>
+  -->
+</header>
+
+<div id="loading">
+  <div class="spinner"></div>
+  読み込み中...
+</div>
+
+<!-- ✅ stats 横並びエリア -->
+<div id="stats"></div>  
+
+<!-- ✅ controls は1個だけ -->
+<div id="controls">
+  <div class="controls-left">
+
+    <input type="text" id="search" placeholder="タイトル検索">
+
+    <select id="filterStatus">
+      <option value="all">すべて</option>
+      <option value="watched">視聴済み</option>
+      <option value="unwatched">未視聴</option>
+    </select>
+
+    <select id="sort">
+      <option value="new">公開日（新→旧）</option>
+      <option value="old">公開日（旧→新）</option>
+      <option value="title">タイトル順</option>
+      <option value="long">時間（長い順）</option>
+      <option value="short">時間（短い順）</option>
+    </select>
+
+    <select id="durationLimit">
+      <option value="">全て</option>
+      <option value="30">30分以内</option>
+      <option value="60">1時間以内</option>
+      <option value="120">2時間以内</option>
+      <option value="180">3時間以内</option>
+      <option value="240">4時間以内</option>
+      <option value="300">5時間以内</option>
+      <option value="360">6時間以内</option>
+      <option value="420">7時間以内</option>
+      <option value="480">8時間以内</option>
+      <option value="540">9時間以内</option>
+      <option value="600">10時間以内</option>
+      <option value="660">11時間以内</option>
+      <option value="720">12時間以内</option>
+    </select>
+
+    <input type="date" id="dateFrom">
+    ～
+    <input type="date" id="dateTo">
+    
+    <button id="checkAll">表示を全部☑</button>
+    <button id="uncheckAll">表示☑を全部解除</button>
+
+    <button id="resetAll">条件リセット</button>
+
+  </div>
+
+  <div class="controls-right">   
+    <button id="toTop">🔼</button>
+    <button id="toBottom">🔽</button>
+  </div>
+</div>
+
+<details id="playlistBox">
+  <summary>再生リスト選択</summary>
+  <input type="text" id="playlistSearch" placeholder="再生リスト検索">
+  <div id="playlistFilterArea"></div>
+
+  <button id="playlistAll">全て✔</button>
+  <button id="playlistClear">全て解除</button>
+</details>
+
+<div class="list-header">
+  
+  <div id="message"></div>
+  
+  <p>動画一覧</p>
+  
+  <details class="data-transfer">
+    <summary>視聴☑データ移行</summary>
+    <button id="exportBtn">エクスポート</button>
+    <button id="importBtn">インポート</button>
+    <input type="file" id="importFile" style="display:none">
+    <div class="notice">
+        ※データは端末のブラウザ毎に保存されます
+    </div>
+  </details>
+</div>
+  
+<table id="list">
+  <thead>
+    <tr>
+      <th>公開日</th>
+      <th>タイトル</th>
+      <th>時間</th>
+      <th>視聴済み</th>
+      <th>再生リスト</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+  
+</body>
+  
+<script> // ------------------------------------------------------------------------------------------------------------------------------------------------
+const url = "https://script.google.com/macros/s/AKfycby35nCN7uhqkTvMhTmb52O33xHxrpHEYkjXl0h8sCv34gxUenTfXbrAwzCs86kb05AR0w/exec";
+
+let data = [];
+
+// 日付
+function formatDate(d){
+  const date = new Date(d);
+
+  const days = ["日","月","火","水","木","金","土"];
+
+  const y = date.getFullYear();
+  const m = date.getMonth()+1;
+  const day = date.getDate();
+  const w = days[date.getDay()];
+
+  const h = date.getHours();
+  const min = date.getMinutes().toString().padStart(2,'0');
+
+  return `${y}/${m}/${day}(${w}) ${h}:${min}`;
+}
+
+// 時間
+function formatDuration(sec){
+  const h = Math.floor(sec/3600);
+  const m = Math.floor((sec%3600)/60);
+  const s = sec%60;
+
+  return (h?`${h}時間`:"")+(m?`${m}分`:"")+(s?`${s}秒`:"");
+}
+
+// 時間を日数に変換
+function formatDays(sec){
+  const days = (sec / 86400).toFixed(1);
+  return `${days}日`;
+}
+
+// ✅ 統計
+function updateStats(filtered){
+  let total = filtered.length;
+  let watched = 0;
+  let totalSec = 0;
+  let watchedSec = 0;
+
+  filtered.forEach(x=>{
+    totalSec += x.durationSec;
+  
+    if(localStorage.getItem(x.videoId)==="true"){
+      watched++;
+      watchedSec += x.durationSec;
+    }
+  });
+  
+  // ✅ 計算は最後 端数切り捨て
+  const rate = total
+    ? Math.floor((watched/total)*1000) / 10 
+    : 0;
+
+  let rateNum = rate;
+  
+  // ✅ 色
+  let rateColor = "#333"; // ベース黒
+
+  if(rateNum >= 30) rateColor = "#3b82f6"; // 青
+  if(rateNum >= 60) rateColor = "#10b981"; // 緑
+  if(rateNum >= 80) rateColor = "#f97316"; // オレンジ
+  if(rateNum === 100) rateColor = "#c9a227"; // 金 👑
+  
+  // ✅ クラス
+  let extraClass = rateNum === 100 ? "completed" : "";
+
+  // ✅ 描画
+  document.getElementById("stats").innerHTML = `
+    <div class="stat-box">
+      <div class="label">動画本数</div>
+      <div class="value">${total}本</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="label">動画時間</div>
+      <div class="value">${formatTotal(totalSec)}</div>
+      <div class="sub">${formatDays(totalSec)}</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="label">視聴済</div>
+      <div class="value">${watched}本</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="label">視聴時間</div>
+      <div class="value">${formatTotal(watchedSec)}</div>
+      <div class="sub">${formatDays(watchedSec)}</div>
+    </div>
+
+    <div class="stat-box ${extraClass}">
+      <div class="label">達成率</div>
+      <div class="value" style="color:${rateColor}">
+        ${rate}%
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress" style="width:${rate}%; background:${rateColor}"></div>
+      </div>
+    </div>
+  `;
+}
+
+function formatTotal(sec){
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  return `${h}時間${m}分`;
+}
+
+// -------------------- 共通関数 --------------------
+
+// 再生リスト件数表示
+function updatePlaylistCount(){
+  const total = document.querySelectorAll("#playlistFilterArea input").length;
+  const checked = document.querySelectorAll("#playlistFilterArea input:checked").length;
+
+  document.querySelector("#playlistBox summary").textContent =
+    `再生リスト選択 (${checked}/${total})`;
+}
+
+// -------------------- 描画 --------------------
+
+function render(){
+  const tbody = document.querySelector("#list tbody");
+  tbody.innerHTML = "";
+
+  const keyword = document.getElementById("search").value.toLowerCase();
+  const status = document.getElementById("filterStatus").value;
+  const sort = document.getElementById("sort").value;
+
+  let filtered = data.filter(item => {
+
+    // タイトル
+    if(keyword && !item.title.toLowerCase().includes(keyword)) return false;
+
+    // 再生リスト
+    const checkedPlaylists = Array.from(
+      document.querySelectorAll("#playlistFilterArea input:checked")
+    ).map(cb => cb.value);
+
+    if(checkedPlaylists.length === 0) return false;
+    if(!checkedPlaylists.includes(item.playlistName)) return false;
+
+    // 視聴状態
+    const watched = localStorage.getItem(item.videoId) === "true";
+    if(status === "watched" && !watched) return false;
+    if(status === "unwatched" && watched) return false;
+
+    // 日付
+    const from = document.getElementById("dateFrom").value;
+    const to = document.getElementById("dateTo").value;
+    const itemDate = new Date(item.publishedAt);
+
+    if(from && itemDate < new Date(from)) return false;
+    if(to && itemDate > new Date(to)) return false;
+
+    // 時間フィルタ(ドロップダウン)
+    const limit = document.getElementById("durationLimit").value;
+    if(limit){
+      const minutes = item.durationSec / 60;
+      if(minutes > Number(limit)) return false;
+    }
+
+    return true;
+  });
+
+  // ソート
+  if(sort==="new") filtered.sort((a,b)=>new Date(b.publishedAt)-new Date(a.publishedAt));
+  if(sort==="old") filtered.sort((a,b)=>new Date(a.publishedAt)-new Date(b.publishedAt));
+  if(sort==="long") filtered.sort((a,b)=>b.durationSec-a.durationSec);
+  if(sort==="short") filtered.sort((a,b)=>a.durationSec-b.durationSec);
+
+  // 描画
+  filtered.forEach(item=>{
+    const tr=document.createElement("tr");
+    tr.dataset.id = item.videoId;
+
+    const checked = localStorage.getItem(item.videoId)==="true";
+
+    tr.innerHTML = `
+      <td>${formatDate(item.publishedAt)}</td>
+      <td>
+        <a href="https://www.youtube.com/watch?v=${item.videoId}" target="_blank">
+          ${item.title}
+        </a>
+      </td>
+      <td class="time-cell">${formatDuration(item.durationSec)}</td>
+      <td class="check-cell"><input type="checkbox" ${checked?"checked":""}></td>
+      <td>
+      ${
+        item.playlistUrl
+          ? `<a href="${item.playlistUrl}" target="_blank">${item.playlistName}</a>`
+          : item.playlistName
+      }
+    </td>
+    `;
+
+    if(checked) tr.style.background="#e6ffe6";
+
+    const cb = tr.querySelector("input");
+    cb.addEventListener("change", ()=>{
+      localStorage.setItem(item.videoId, cb.checked);
+      render();
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  updateStats(filtered);
+  updatePlaylistCount();
+}
+ 
+  function showMessage(text, type="success"){
+    const el = document.getElementById("message");
+  
+    el.textContent = text;
+  
+    if(type === "error"){
+      el.style.border = "2px solid #ef4444";
+      el.style.color = "#ef4444";
+    } else {
+      el.style.border = "2px solid #10b981";
+      el.style.color = "#10b981";
+    }
+  
+    el.classList.add("show");
+  
+    setTimeout(()=>{
+      el.classList.remove("show");
+    }, 2000);
+  }
+
+// -------------------- 初期読み込み --------------------
+
+fetch(url)
+  .then(r=>r.json())
+  .then(json=>{
+    data = json;
+    document.getElementById("loading").style.display="none";
+
+    const area = document.getElementById("playlistFilterArea");
+
+    // ✅ ここが今回の本体（正しく書き直した部分）
+
+    const playlistCount = {};
+    data.forEach(item=>{
+      playlistCount[item.playlistName] =
+        (playlistCount[item.playlistName] || 0) + 1;
+    });
+
+    const set = new Set(data.map(x => x.playlistName));
+
+    area.innerHTML = "";
+
+    set.forEach(p=>{
+      const label = document.createElement("label");
+      label.style.display="block";
+
+      label.innerHTML = `
+        <input type="checkbox" value="${p}" checked>
+        ${p} (${playlistCount[p]})
+      `;
+
+      label.querySelector("input").addEventListener("change", ()=>{
+        render();
+      });
+
+      area.appendChild(label);
+    });
+
+    // ✅ イベント
+
+    document.getElementById("search").addEventListener("input", render);
+    document.getElementById("filterStatus").addEventListener("change", render);
+    document.getElementById("sort").addEventListener("change", render);
+    document.getElementById("durationLimit").addEventListener("change", render);
+    document.getElementById("dateFrom").addEventListener("change", render);
+    document.getElementById("dateTo").addEventListener("change", render);
+
+    // 表示を全て☑
+    document.getElementById("checkAll").addEventListener("click", ()=>{
+      document.querySelectorAll("#list tbody tr").forEach(tr=>{
+        const id = tr.dataset.id;
+        if(id){
+          localStorage.setItem(id, true);
+        }
+      });
+      render();
+    });
+
+    // 表示の☑を全て外す
+    document.getElementById("uncheckAll").addEventListener("click", ()=>{
+      document.querySelectorAll("#list tbody tr").forEach(tr=>{
+        const id = tr.dataset.id;
+        if(id){
+          localStorage.setItem(id, false);
+        }
+      });
+      render();
+    });
+
+    // 再生リスト検索（※チェック状態は変えない）
+    document.getElementById("playlistSearch").addEventListener("input", ()=>{
+      const keyword = document.getElementById("playlistSearch").value.toLowerCase();
+
+      document.querySelectorAll("#playlistFilterArea label").forEach(label=>{
+        const text = label.textContent.toLowerCase();
+        label.style.display = (!keyword || text.includes(keyword)) ? "block" : "none";
+      });
+    });
+
+    // 再生リストを全てON（表示中のみ）
+    document.getElementById("playlistAll").onclick = ()=>{
+      document.querySelectorAll("#playlistFilterArea label").forEach(label=>{
+        if(label.style.display==="none") return;
+        label.querySelector("input").checked=true;
+      });
+      render();
+    };
+
+    // 再生リストを全てOFF
+    document.getElementById("playlistClear").onclick = ()=>{
+      document.querySelectorAll("#playlistFilterArea label").forEach(label=>{
+        if(label.style.display==="none") return;
+        label.querySelector("input").checked=false;
+      });
+      render();
+    };
+
+    // 条件リセット
+    document.getElementById("resetAll").addEventListener("click", ()=>{
+      
+      // 検索
+      document.getElementById("search").value = "";
+      document.getElementById("playlistSearch").value = "";
+    
+      // 状態
+      document.getElementById("filterStatus").value = "all";
+    
+      // ソート
+      document.getElementById("sort").value = "new";
+    
+      // 日付
+      document.getElementById("dateFrom").value = "";
+      document.getElementById("dateTo").value = "";
+    
+      // 時間
+      document.getElementById("durationLimit").value = "";
+    
+      // ✅ 再生リスト表示を全部復活
+      document.querySelectorAll("#playlistFilterArea label").forEach(label=>{
+        label.style.display = "block";
+      });
+    
+      // ✅ 再生リスト全部チェックON
+      document.querySelectorAll("#playlistFilterArea input").forEach(cb=>{
+        cb.checked = true;
+      });
+    
+      document.querySelector("#playlistBox summary").textContent =
+        `再生リスト選択 (${set.size})`;
+    
+      render();
+    });
+    // スクロール
+    document.getElementById("toTop").onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+    document.getElementById("toBottom").onclick=()=>window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+
+    render();
+  });
+  
+    /* --- データ移行 --- */
+    document.getElementById("exportBtn").onclick=()=>{
+      const obj={};
+      Object.keys(localStorage).forEach(k=>obj[k]=localStorage.getItem(k));
+    
+      const blob=new Blob([JSON.stringify(obj)],{type:"application/json"});
+      const a=document.createElement("a");
+      a.href=URL.createObjectURL(blob);
+      a.download="data.json";
+      a.click();
+    
+      showMessage("✅ エクスポート完了");
+    };
+    
+    document.getElementById("importBtn").onclick = () => {
+    document.getElementById("importFile").click();
+};
+
+  document.getElementById("importFile").addEventListener("change", e => {
+    const file = e.target.files[0];
+    if(!file) return;
+  
+    const reader = new FileReader();
+  
+    reader.onload = ev => {
+      try {
+        const obj = JSON.parse(ev.target.result);
+    
+        Object.keys(obj).forEach(k=>{
+          localStorage.setItem(k, String(obj[k]));
+        });
+    
+        showMessage(`✅ インポート成功！（${Object.keys(obj).length}件）`);
+    
+        render();
+    
+      } catch(err){
+        showMessage("❌ インポート失敗（形式エラー）", "red");
+      }
+    };
+  
+    reader.readAsText(file);
+  });
+</script>
+</body>
+</html>
