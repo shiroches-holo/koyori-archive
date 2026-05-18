@@ -206,22 +206,23 @@ function render(){
   
             <div>📅 ${formatDate(item.publishedAt)}</div>
             <div>⏱ ${formatDuration(item.durationSec)}</div>
-  
-            <div>
-              <!-- 視聴済み <input type="checkbox" ${checked?"checked":""}> -->
-            </div>
-  
-            <div>
-            🎵 ${
-              item.playlistUrl
-                ? `<a href="${item.playlistUrl}" target="_blank">${item.playlistName}</a>`
-                : item.playlistName
-            }
-            </div>
-  
-            <!-- 視聴済み✅ -->
-            <div class="check-area">
-              視聴済み <input type="checkbox" ${checked?"checked":""}>
+           
+            <div class="playlist-row">
+
+              <!-- 再生リスト -->
+              <div class="playlist-text">
+                🎵 ${
+                  item.playlistUrl
+                    ? `<a href="${item.playlistUrl}" target="_blank">${item.playlistName}</a>`
+                    : item.playlistName
+                }
+              </div>
+              
+              <!-- 視聴済み✅ -->
+              <div class="check-area">
+                視聴済み <input type="checkbox" ${checked?"checked":""}>
+              </div>
+
             </div>
 
           </div>
