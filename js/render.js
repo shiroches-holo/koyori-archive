@@ -127,7 +127,7 @@ function render(){
   const status = document.getElementById("filterStatus").value;
   const sort = document.getElementById("sort").value;
 
-  let filtered = data.filter(item => {
+  let filtered = Window.data.filter(item => {
 
     // タイトル
     if(keyword && !item.title.toLowerCase().includes(keyword)) return false;
