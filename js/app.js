@@ -39,20 +39,18 @@ function showMessage(text, type="success"){
 // -------------------- 初期読み込み --------------------
 
 fetch(url)
-  .then(r=>r.json())
-  .then(json=>{
+  .then(r => r.json())
+  .then(json => {
     window.data = json;
 
-    autoViewMode(); // 初期表示自動判定
-    
-    document.getElementById("loading").style.display="none";
+    autoViewMode();
+
+    document.getElementById("loading").style.display = "none";
 
     const area = document.getElementById("playlistFilterArea");
 
-    // ✅ ここが今回の本体（正しく書き直した部分）
-
     const playlistCount = {};
-    windos.data.forEach(item=>{
+    window.data.forEach(item => {
       playlistCount[item.playlistName] =
         (playlistCount[item.playlistName] || 0) + 1;
     });
@@ -61,25 +59,26 @@ fetch(url)
 
     area.innerHTML = "";
 
-    set.forEach(p=>{
+    set.forEach(p => {
       const label = document.createElement("label");
-      label.style.display="block";
 
       label.innerHTML = `
         <input type="checkbox" value="${p}" checked>
         ${p} (${playlistCount[p]})
       `;
 
-      label.querySelector("input").addEventListener("change", ()=>{
-        render();
-    
-      });
-      
+      label.querySelector("input")
+        .addEventListener("change", render);
+
       area.appendChild(label);
-      
     });
 
+    // ✅ 最後に1回だけ
     render();
+  })
+  .catch(err => {
+    console.error("fetchエラー", err);
+  });
 
     // ✅ イベント
     document.querySelectorAll('input[name="view"]').forEach(el=>{
