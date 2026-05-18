@@ -232,12 +232,17 @@
   }
   
   #playlistFilterArea {
-    font-size:18px;
+    font-size:22px;
     max-height: 150px;
-    overflow-y: auto;
+    overflow-y: auto; /*スクロールあり*/
     border: 1px solid #ccc;
     padding: 5px;
     background: #fafafa;
+  }
+
+  /* 再生リスト選択を展開時*/
+  #playlistBox[open] #playlistFilterArea {
+    max-height: 1000px; /* 表示の制限実質なし */
   }
 
   #playlistBox {
@@ -489,25 +494,25 @@
       <option value="long">時間（長い順）</option>
       <option value="short">時間（短い順）</option>
     </select>
-   
-    <div class="range-group">
-      <select id="durationLimit">
-        <option value="">全時間</option>
-        <option value="30">30分以内</option>
-        <option value="60">1時間以内</option>
-        <option value="120">2時間以内</option>
-        <option value="180">3時間以内</option>
-        <option value="240">4時間以内</option>
-        <option value="300">5時間以内</option>
-        <option value="360">6時間以内</option>
-        <option value="420">7時間以内</option>
-        <option value="480">8時間以内</option>
-        <option value="540">9時間以内</option>
-        <option value="600">10時間以内</option>
-        <option value="660">11時間以内</option>
-        <option value="720">12時間以内</option>
-      </select>
 
+    <select id="durationLimit">
+      <option value="">全時間</option>
+      <option value="30">30分以内</option>
+      <option value="60">1時間以内</option>
+      <option value="120">2時間以内</option>
+      <option value="180">3時間以内</option>
+      <option value="240">4時間以内</option>
+      <option value="300">5時間以内</option>
+      <option value="360">6時間以内</option>
+      <option value="420">7時間以内</option>
+      <option value="480">8時間以内</option>
+      <option value="540">9時間以内</option>
+      <option value="600">10時間以内</option>
+      <option value="660">11時間以内</option>
+      <option value="720">12時間以内</option>
+    </select>
+    
+    <div class="range-group">
       <input type="date" id="dateFrom">
       <span>～</span>
       <input type="date" id="dateTo">
@@ -790,9 +795,10 @@ function render(){
       document.querySelectorAll("#playlistFilterArea input:checked")
     ).map(cb => cb.value);
 
-    if(checkedPlaylists.length > 0){
-      if(!checkedPlaylists.includes(item.playlistName)) return false;
-    }
+    if(checkedPlaylists.length === 0) return false
+    
+    if(!checkedPlaylists.includes(item.playlistName)) return false;
+    
 
     // 視聴状態
     const watched = localStorage.getItem(item.videoId) === "true";
