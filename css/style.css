@@ -365,9 +365,9 @@ tr:hover {
   body {
     width: 100%;
     margin: 0 auto;
-    padding: 0 6+px;
+    padding: 6 6px;
     box-sizing: border-box;
-    font-size: 12px;
+    font-size: 14px;
   }
 
   /* ---------- ヘッダー ---------- */  
@@ -389,11 +389,11 @@ tr:hover {
   }
 
   .stat-box {
-    padding: 8px;
+    padding: 12px;
   }
 
   .stat-box .value {
-    font-size: 10px;
+    font-size: 14px;
   }
 
   /* 5番目（達成率）横幅2 */
@@ -458,8 +458,8 @@ tr:hover {
 
   /* ---------- カード ---------- */
   .card {
-    font-size: 14px;
-    padding: 10px;
+    font-size: 10px;
+    padding: 14px;
     margin-bottom: 10px;
   }
 
