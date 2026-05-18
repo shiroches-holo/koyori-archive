@@ -263,7 +263,7 @@ tr:hover {
 
 /* 再生リスト選択を展開時*/
 #playlistBox[open] #playlistFilterArea {
-  max-height: 800px; /* 表示の制限実質なし */
+  max-height: 900px; /* 表示の制限実質なし */
 }
 
 #playlistBox {
@@ -308,7 +308,7 @@ tr:hover {
   pointer-events: none;
 
   transition: all 0.25s ease;
-  z-index: 800;
+  z-index: 900;
 }
 
 /* 表示時 */
@@ -359,7 +359,7 @@ tr:hover {
    📱 スマホ専用スタイル（ここから）
 ========================================= */
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
 
   /* ---------- レイアウト ---------- */
   body {
