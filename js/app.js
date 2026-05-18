@@ -2,19 +2,6 @@ const url = "https://script.google.com/macros/s/AKfycby35nCN7uhqkTvMhTmb52O33xHx
 
 let data = [];
 
-// 初期表示を自動判定
-function autoViewMode(){
-  const isMobile = window.innerWidth <= 1000;
-  const target = isMobile ? "card" : "table";
-
-  document.querySelector(`input[name="view"][value="${target}"]`).checked = true;
-}
-
-function getViewMode(){
-  const selected = document.querySelector('input[name="view"]:checked');
-  return selected ? selected.value : "table";
-}
-
 // -------------------- 共通関数 --------------------
 
 // 再生リスト件数表示
