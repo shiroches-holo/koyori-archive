@@ -72,9 +72,12 @@ fetch(url)
 
       label.querySelector("input").addEventListener("change", ()=>{
         render();
-      });
-
+      
       area.appendChild(label);
+      });
+      
+      render();
+      
     });
 
     // ✅ イベント
@@ -239,6 +242,8 @@ fetch(url)
     document.getElementById("closeHelp").onclick = () => {
       modal.style.display = "none";
     };
+
+    console.log("ここまで来てる");
   
     reader.readAsText(file);
   });
