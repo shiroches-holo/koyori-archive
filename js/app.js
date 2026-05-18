@@ -191,7 +191,6 @@ fetch(url)
     document.getElementById("toBottom").onclick=()=>window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
 
     render();
-  });
   
     /* --- データ移行 --- */
     document.getElementById("exportBtn").onclick=()=>{
