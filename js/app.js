@@ -1,6 +1,6 @@
 const url = "https://script.google.com/macros/s/AKfycby35nCN7uhqkTvMhTmb52O33xHxrpHEYkjXl0h8sCv34gxUenTfXbrAwzCs86kb05AR0w/exec";
 
-let window.data = [];
+window.data = [];
 
 // -------------------- 共通関数 --------------------
 
@@ -52,12 +52,12 @@ fetch(url)
     // ✅ ここが今回の本体（正しく書き直した部分）
 
     const playlistCount = {};
-    data.forEach(item=>{
+    windos.data.forEach(item=>{
       playlistCount[item.playlistName] =
         (playlistCount[item.playlistName] || 0) + 1;
     });
 
-    const set = new Set(data.map(x => x.playlistName));
+    const set = new Set(window.data.map(x => x.playlistName));
 
     area.innerHTML = "";
 
@@ -72,13 +72,14 @@ fetch(url)
 
       label.querySelector("input").addEventListener("change", ()=>{
         render();
-      
-      area.appendChild(label);
+    
       });
       
-      render();
+      area.appendChild(label);
       
     });
+
+    render();
 
     // ✅ イベント
     document.querySelectorAll('input[name="view"]').forEach(el=>{
