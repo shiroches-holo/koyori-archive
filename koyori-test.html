@@ -13,12 +13,21 @@
   }
   
   /* ---------- ヘッダー ---------- */
-  
-  /* 光ライン */
   header {
+    background: linear-gradient(
+      to bottom,
+      #fe68ad 0%,
+      #f09cc0 40%,
+      #ffacd3 100%
+    );    
+    border-bottom: 2px solid rgba(255,255,255,0.5);
+    padding: 12px 16px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(254,104,173,0.3);
     position: relative;
   }
   
+  /* 光ライン */
   header::before {
     content: "";
     position: absolute;
@@ -32,7 +41,8 @@
       rgba(255,255,255,0)
     );
   }
-  
+
+  /* 光ライン */
   header::after {
     content: "";
     position: absolute;
