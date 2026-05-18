@@ -438,6 +438,8 @@
     #resetAll {
       /* grid-column: span 2; */
       grid-column: span 1; /* ← 横並びに戻す */
+      background: #ffe0e0;
+      color: #c00;
     }
     .controls-left span {
       text-align: center;
@@ -1072,7 +1074,11 @@ fetch(url)
     document.getElementById("dateTo").addEventListener("change", render);
 
     // 表示を全て☑
-    document.getElementById("checkAll").addEventListener("click", ()=>{
+    document.getElementById("checkAll").addEventListener("click", ()=>{  
+      if(!confirm("表示されている動画を全て視聴済みにします。よろしいですか？")) {
+          return;
+        }
+
       document.querySelectorAll("#list tbody tr").forEach(tr=>{
         const id = tr.dataset.id;
         if(id){
@@ -1084,6 +1090,9 @@ fetch(url)
 
     // 表示の☑を全て外す
     document.getElementById("uncheckAll").addEventListener("click", ()=>{
+      if(!confirm("表示されている動画の視聴チェックをすべて解除します。よろしいですか？")) {
+          return;
+        }
       document.querySelectorAll("#list tbody tr").forEach(tr=>{
         const id = tr.dataset.id;
         if(id){
