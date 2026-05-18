@@ -318,6 +318,28 @@
     transform: translate(-50%, -50%) scale(1);
   }
 
+  /* ヘルプ */
+  #helpModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  
+    background: rgba(0,0,0,0.4);
+    display: none;
+  }
+  
+  #helpModal .modal-content {
+    background: white;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+  
+    margin: 100px auto;
+    border-radius: 10px;
+  }
+
   /* =========================================
      💻️ PC専用
   ========================================= */
@@ -541,8 +563,6 @@
     </div>
 
     <div class="btn-group">
-      <button id="checkAll">表示を全部☑</button>
-      <button id="uncheckAll">表示☑を全部解除</button>
       <button id="resetAll">条件リセット</button>
     </div>
 
@@ -551,6 +571,8 @@
   <div class="controls-right">   
     <button id="toTop">🔼</button>
     <button id="toBottom">🔽</button>
+    <button id="checkAll">表示全☑</button>
+    <button id="uncheckAll">全☑解除</button>
   </div>
 </div>
 
@@ -590,6 +612,35 @@
     <input type="file" id="importFile" style="display:none">
     <div class="notice">
         ※データは端末のブラウザ毎に保存されます
+    </div>
+    <button id="helpBtn">❓ヘルプ</button>
+    <div id="helpModal">
+      <div class="modal-content">
+        <h2>ヘルプ</h2>
+    
+        <h3>このツールについて</h3>
+        <p>
+          博衣こよりの配信アーカイブを視聴管理するための非公式ツールです。
+        </p>
+    
+        <h3>使い方</h3>
+        <ul>
+          <li>タイトル検索で絞り込み</li>
+          <li>再生リストでフィルタ</li>
+          <li>チェックで視聴管理</li>
+        </ul>
+    
+        <h3>バージョン</h3>
+        <p>v1.2.0</p>
+    
+        <h3>更新履歴</h3>
+        <ul>
+          <li>v1.2.0 UI改善・バグ修正</li>
+          <li>v1.1.0 カード表示追加</li>
+        </ul>
+    
+        <button id="closeHelp">閉じる</button>
+      </div>
     </div>
   </details>
 </div>
@@ -1152,6 +1203,17 @@ fetch(url)
       } catch(err){
         showMessage("❌ インポート失敗（形式エラー）", "red");
       }
+    };
+
+    // ヘルプ
+    const modal = document.getElementById("helpModal");
+
+    document.getElementById("helpBtn").onclick = () => {
+      modal.style.display = "block";
+    };
+    
+    document.getElementById("closeHelp").onclick = () => {
+      modal.style.display = "none";
     };
   
     reader.readAsText(file);
