@@ -36,3 +36,16 @@ function formatTotal(sec){
   const m = Math.floor((sec % 3600) / 60);
   return `${h}時間${m}分`;
 }
+
+// 初期表示を自動判定
+function autoViewMode(){
+  const isMobile = window.innerWidth <= 1000;
+  const target = isMobile ? "card" : "table";
+
+  document.querySelector(`input[name="view"][value="${target}"]`).checked = true;
+}
+
+function getViewMode(){
+  const selected = document.querySelector('input[name="view"]:checked');
+  return selected ? selected.value : "table";
+}
