@@ -29,3 +29,10 @@ function formatDays(sec){
   const days = (sec / 86400).toFixed(1);
   return `${days}日`;
 }
+
+// 秒を時間に変換
+function formatTotal(sec){
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  return `${h}時間${m}分`;
+}
