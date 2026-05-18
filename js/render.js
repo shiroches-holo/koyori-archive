@@ -120,14 +120,14 @@ function render(){
   const playlistCheckboxes = document.querySelectorAll("#playlistFilterArea input");
 
   if(playlistCheckboxes.length === 0){
-    // return; // まだロード中なので描画しない
+    return; // まだロード中なので描画しない
   }
   
   const keyword = document.getElementById("search").value.toLowerCase();
   const status = document.getElementById("filterStatus").value;
   const sort = document.getElementById("sort").value;
 
-  let filtered = Window.data.filter(item => {
+  let filtered = window.data.filter(item => {
 
     // タイトル
     if(keyword && !item.title.toLowerCase().includes(keyword)) return false;
