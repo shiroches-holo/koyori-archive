@@ -41,7 +41,7 @@ function showMessage(text, type="success"){
 fetch(url)
   .then(r => r.json())
   .then(json => {
-    window.data = json.data;
+    window.data = json;
 
     autoViewMode();
 
