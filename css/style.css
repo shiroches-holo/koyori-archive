@@ -383,14 +383,15 @@ tr:hover {
 @media (max-width: 600px) {
 
   /* ---------- レイアウト ---------- */
-  /*body {
+  body {
     width: 100%;
     margin: 0;
     padding: 6px;
     box-sizing: border-box;
     font-size: 14px;
-  }*/
-   
+  }
+
+   /*
    body {
      background: #fff6f9;  
      margin: 0;
@@ -400,6 +401,7 @@ tr:hover {
   .main {
     padding: 10px;
   }
+   */
 
   #list tbody tr td:last-child:not([colspan]) {
     max-width: 120px;
