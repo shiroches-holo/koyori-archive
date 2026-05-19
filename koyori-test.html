@@ -77,9 +77,35 @@
 		    </select>
 		    
 		    <div class="range-group">
-		      <input type="date" id="dateFrom">
-		      <span>～</span>
-		      <input type="date" id="dateTo">
+		      <div class="range-group">
+				<input
+					type="text"
+					id="dateFrom"
+					placeholder="年/月/日"
+					onfocus="
+						this.type='date';
+						setTimeout(() => this.showPicker && this.showPicker(), 0);
+					"
+					onblur="
+						if(!this.value)this.type='text'
+					"
+				>
+
+				<span>～</span>
+
+				<input
+					type="text"
+					id="dateTo"
+					placeholder="年/月/日"
+					onfocus="
+						this.type='date';
+						setTimeout(() => this.showPicker && this.showPicker(), 0);
+					"
+					onblur="
+						if(!this.value)this.type='text'
+					"
+				>
+				</div>
 		    </div>
 
 		    <div class="btn-group">
@@ -125,16 +151,22 @@
 							<p>
 								ホロライブ所属メンバーの配信アーカイブを管理するための非公式ツールです。<br>
 								視聴済みチェックや検索・並び替え・フィルタ機能で効率よく管理できます。<br>
-								動画時間や視聴時間の表示も行っており、ご自身の視聴状況を確認することが可能となっています。<br>
-								<br>
-								<p style="margin-top:12px;">
-									<strong>※注意</strong><br>
-									データはYouTubeのライブ一覧をもとに取得しています。<br>
-									一部、配信以外の動画（オリ曲・歌・Shortsなど）が含まれる場合があります。<br>
-									配信時間のみを知りたい場合は、検索機能や再生リストでの絞り込みを行ってください。
-								</p>
-							</p>
+								動画時間や視聴時間の表示も行っており、
+								ご自身の視聴状況を確認することが可能です。
+						</p>
+
+						<p style="margin-top:12px;">
+							<strong>※注意</strong><br>
+							データはYouTubeのライブ一覧をもとに取得しています。<br>
+							一部、配信以外の動画（オリ曲・歌・Shortsなど）が含まれる場合があります。<br>
+							配信時間のみを確認したい場合は、
+							検索機能や再生リストでの絞り込みをご利用ください。<br><br>
+
+							動画数が多い場合、
+							初回読み込みや検索・並び替え時に表示まで時間がかかる場合があります。
+						</p>
 						</div>
+						<!--
 						<div class="tab-panel" id="howto" style="display:none;">
 							<h3>使い方</h3>
 							<ul>
@@ -160,6 +192,83 @@
 									YouTubeの該当ページを別タブで開きます
 								</li>
 							</ul>
+						</div>
+						-->
+						<div class="tab-panel" id="howto" style="display:none;">
+						<h3>使い方</h3>
+
+						<ul>
+							<li>
+							<strong>タイトル検索：</strong>
+							「タイトル検索」欄で動画タイトルを絞り込みできます
+							</li>
+
+							<li>
+							<strong>視聴状態：</strong>
+							「すべて / 視聴済み / 未視聴」で表示切替できます
+							</li>
+
+							<li>
+							<strong>並び替え：</strong>
+							「公開日（新→旧）」などから公開日・タイトル・動画時間順に変更できます
+							</li>
+
+							<li>
+							<strong>時間フィルタ：</strong>
+							「全時間」から動画時間で絞り込みできます
+							</li>
+
+							<li>
+							<strong>公開日範囲：</strong>
+							「年/月/日」から公開日の期間指定ができます
+							</li>
+
+							<li>
+							<strong>再生リスト選択：</strong>
+							再生リストごとの表示切替や検索ができます
+							</li>
+
+							<li>
+							<strong>視聴管理：</strong>
+							チェック☑を付けることで視聴済み管理ができます
+							</li>
+
+							<li>
+							<strong>一括操作：</strong><br>
+							「表示全☑」で表示中の動画をまとめてチェックできます<br>
+							「全☑解除」で一括解除できます
+							</li>
+
+							<li>
+							<strong>移動ボタン：</strong>
+							「🔼」でページ上部、「🔽」でページ下部へ移動できます
+							</li>
+
+							<li>
+							<strong>条件リセット：</strong>
+							「条件リセット」で検索条件を初期状態に戻せます
+							</li>
+
+							<li>
+							<strong>データ移行：</strong>
+							「エクスポート / インポート」で視聴データを保存・復元できます
+							</li>
+
+							<li>
+							<strong>リンク：</strong>
+							動画タイトルや再生リスト名を押すと、
+							YouTubeを別タブで開きます
+							</li>
+						</ul>
+
+						<p style="margin-top:12px;">
+							<strong>※視聴データについて</strong><br>
+							視聴チェックのデータは、ご利用中のブラウザごとに保存されます。<br>
+							別端末・別ブラウザではデータは引き継がれません。<br><br>
+
+							データを移行したい場合は、
+							「エクスポート / インポート」機能をご利用ください。
+						</p>
 						</div>
 						<div class="tab-panel" id="version" style="display:none;">
 							<h3>バージョン</h3>
