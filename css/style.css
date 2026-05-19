@@ -389,11 +389,6 @@ tr:hover {
     box-sizing: border-box;
     font-size: 14px;
   }
-  
-  .main {
-    padding: 10px;
-  }
-   */
 
   #list tbody tr td:last-child:not([colspan]) {
     max-width: 120px;
