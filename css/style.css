@@ -390,7 +390,7 @@ tr:hover {
   }
 
    main {
-    margin: 10px;
+    padding: 10px;
   }
 
   #list tbody tr td:last-child:not([colspan]) {
