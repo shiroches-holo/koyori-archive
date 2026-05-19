@@ -17,7 +17,6 @@ header {
     #f09cc0 40%,
     #ffacd3 100%
   );    
-  width: 100%;
   box-sizing: border-box;
   border-bottom: 2px solid rgba(255,255,255,0.5);
   padding: 12px;
