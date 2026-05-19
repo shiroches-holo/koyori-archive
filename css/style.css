@@ -401,7 +401,6 @@ tr:hover {
     font-size: 18px;
     white-space: normal; /* ← 改行OK */
     line-height: 1.3;
-    width: 100%;
   }
 
   .header-note-top {
