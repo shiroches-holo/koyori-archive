@@ -23,7 +23,7 @@ header {
   position: relative;
 }
 
-/* 光ライン */
+/* 光ライン 
 header::before {
   content: "";
   position: static;
@@ -32,6 +32,7 @@ header::before {
   height: 10px;
   background: linear-gradient(...);
 }
+*/
 
 /* 光ライン */
 header::after {
