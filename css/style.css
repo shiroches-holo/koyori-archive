@@ -384,19 +384,11 @@ tr:hover {
 
   /* ---------- レイアウト ---------- */
   body {
-    width: 100%;
-    margin: 6px;
-    padding: 6px;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
     font-size: 14px;
   }
-
-   /*
-   body {
-     background: #fff6f9;  
-     margin: 0;
-     padding: 0;
-   }
   
   .main {
     padding: 10px;
