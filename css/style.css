@@ -518,6 +518,7 @@ tr:hover {
     margin-bottom: 10px;    
     width: 100%;
     overflow: hidden;
+    box-sizing: border-box
   }
 
   .card .playlist-row {
