@@ -389,6 +389,10 @@ tr:hover {
     font-size: 14px;
   }
 
+   main {
+    margin: 10px;
+  }
+
   #list tbody tr td:last-child:not([colspan]) {
     max-width: 120px;
     white-space: normal;
