@@ -659,9 +659,11 @@ tr:hover {
 
    /* ヘルプ */
    #helpModal .modal-content {
-       width: 92%;        /* ←ほぼ全幅🔥 */
-       max-width: none;   /* 制限解除 */
-       padding: 16px;
+       position: static;       /* ←これが重要🔥 */
+       transform: none;        /* ←消す */
+       width: 92%;
+       max-width: none;
+       max-height: 80vh;
      }
    
    .tab-buttons {
