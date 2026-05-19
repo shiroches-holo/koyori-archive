@@ -25,29 +25,6 @@ header {
   position: relative;
 }
 
-/* 光ライン 
-header::before {
-  content: "";
-  position: static;
-  top: 0;
-  width: 100%;
-  height: 10px;
-  background: linear-gradient(...);
-}
-*/
-
-/* 光ライン */
-/*
-header::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 2px;
-  background: rgba(255,255,255,0.4);
-}
-*/
-
 h1 {
   font-size: 22px;
   white-space: nowrap;
@@ -58,14 +35,17 @@ h1 {
 
 .header-row {
   display: flex;
+  flex-direction: column; /* 縦に並べる */
   justify-content: space-between;
-  align-items: center; /* ←これに変える */
 }
 
 .header-note-top {
+  align-self: flex-end; /* ←右寄せ */ 
   font-size: 12px;
+  margin-top: 4px;        /* ←少し下げる */
   white-space: nowrap; /* ←折り返し防止 */
 }
+
 
 /* 読み込み中 */
 #loading {
@@ -304,6 +284,12 @@ tr:hover {
   font-weight: bold;
 }
 
+.playlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 /* データ移行 */
 .data-transfer {
   text-align: right;
@@ -339,25 +325,123 @@ tr:hover {
 
 /* ヘルプ */
 #helpModal {
+  display: none;           /* ←基本非表示 */
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 
-  background: rgba(0,0,0,0.4);
-  display: none;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
 }
 
+/* 中央配置は中身でやる */
 #helpModal .modal-content {
-  background: white;
-  padding: 20px;
-  width: 90%;
-  max-width: 600px;
+  position: absolute; 
+  top: 50%;
+  left: 50%;
+  max-height: 80vh;     /* 画面の80%まで */
+  overflow: hidden;     /* 全体はスクロールさせない */
+  transform: translate(-50%, -50%);  /* ←これが一番安定 */
 
-  margin: 100px auto;
-  border-radius: 10px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25); /* ←強める */
+  padding: 20px;
+
+  text-align: left;
 }
+
+/* 見出し */
+.tab-panel h3 {
+  text-align: left;   /* ←強制左寄せ */
+  font-size: 18px;
+  margin-bottom: 10px;
+  border-left: 4px solid #3b82f6;
+  padding-left: 8px;
+  color: #1f2937;
+
+}
+
+.tab-buttons button {
+  border: none;
+  padding: 8px 12px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.tab-buttons button:hover {
+  background: #e5e7eb;
+}
+
+.tab-buttons button.active {
+  background: #3b82f6;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* ←これ追加 */
+}
+
+#closeHelp {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #e5e7eb;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#closeHelp:hover {
+  background: #d1d5db;
+}
+
+/* 中身だけスクロール */
+.tab-content {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 6px; /* スクロールバー余白 */ 
+  border-top: 1px solid #eee;
+  padding-top: 10px
+}
+
+/* 本文の余白調整 */
+.tab-panel p {
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+/* 注意エリア */
+.data-note {
+  background: #fff7ed;
+  border-left: 4px solid #f97316;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+
+/* バージョン履歴情報 */
+.version-item {
+  margin-bottom: 14px;
+}
+
+.version-header {
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.version-header .date {
+  font-size: 13px;
+  color: #666;
+  margin-left: 6px;
+}
+
+.version-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+}
+
 
 /* =================================================================================
    💻️ PC専用
