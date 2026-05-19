@@ -533,8 +533,6 @@ tr:hover {
     width: 100%;
     overflow: hidden;
     box-sizing: border-box;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1)
   }
 
    /* カード内の横並びエリア→再生リスト名とチェックボックス*/
