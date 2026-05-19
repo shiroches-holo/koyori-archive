@@ -1,193 +1,189 @@
 <html lang="ja">
-<main>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>博衣こより動画一覧</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
 
-	<head>
-	  <meta charset="UTF-8">
-	  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-	  <title>博衣こより動画一覧</title>
-	  
-	  <!-- CSS -->
-	  <link rel="stylesheet" href="css/style.css">
+</head>
 
-	</head>
+<body>
+	<main>
+		<header>
+		  <div class="header-row">
+		    <h1>博衣こより🧪 アーカイブ視聴チェッカー</h1>
 
-	<body>
+		    <div class="header-note-top">
+		      ※非公式ファンメイドサイト
+		    </div>
+		  </div>
+		  <!--
+		  <div class="header-note-bottom">
+		    ※本ツールはYouTubeライブ一覧を元に作成されています  
+		  </div>
+		  <div class="header-note-bottom">
+		    配信以外にオリ曲等も混在します（メンバー限定除く）
+		  </div>
+		  -->
+		</header>
 
-	<header>
+		<div id="loading">
+		  <div class="spinner"></div>
+		  読み込み中...
+		</div>
 
-	  <div class="header-row">
-	    <h1>博衣こより🧪 アーカイブ視聴チェッカー</h1>
+		<!-- ✅ stats 横並びエリア -->
+		<div id="stats"></div>  
 
-	    <div class="header-note-top">
-	      ※非公式ファンメイドサイト
-	    </div>
-	  </div>
-	  <!--
-	  <div class="header-note-bottom">
-	    ※本ツールはYouTubeライブ一覧を元に作成されています  
-	  </div>
-	  <div class="header-note-bottom">
-	    配信以外にオリ曲等も混在します（メンバー限定除く）
-	  </div>
-	  -->
-	</header>
+		<!-- ✅ controls は1個だけ -->
+		<div id="controls">
+		  
+		  <div class="controls-left">
 
-	<div id="loading">
-	  <div class="spinner"></div>
-	  読み込み中...
-	</div>
+		    <input type="text" id="search" placeholder="タイトル検索">
 
-	<!-- ✅ stats 横並びエリア -->
-	<div id="stats"></div>  
+		    <select id="filterStatus">
+		      <option value="all">すべて</option>
+		      <option value="watched">視聴済み</option>
+		      <option value="unwatched">未視聴</option>
+		    </select>
 
-	<!-- ✅ controls は1個だけ -->
-	<div id="controls">
-	  
-	  <div class="controls-left">
+		    <select id="sort">
+		      <option value="new">公開日（新→旧）</option>
+		      <option value="old">公開日（旧→新）</option>
+		      <option value="title_asc">タイトル（昇順）</option>
+		      <option value="title_desc">タイトル（降順）</option>
+		      <option value="long">時間（長い順）</option>
+		      <option value="short">時間（短い順）</option>
+		    </select>
 
-	    <input type="text" id="search" placeholder="タイトル検索">
+		    <select id="durationLimit">
+		      <option value="">全時間</option>
+		      <option value="30">30分以内</option>
+		      <option value="60">1時間以内</option>
+		      <option value="120">2時間以内</option>
+		      <option value="180">3時間以内</option>
+		      <option value="240">4時間以内</option>
+		      <option value="300">5時間以内</option>
+		      <option value="360">6時間以内</option>
+		      <option value="420">7時間以内</option>
+		      <option value="480">8時間以内</option>
+		      <option value="540">9時間以内</option>
+		      <option value="600">10時間以内</option>
+		      <option value="660">11時間以内</option>
+		      <option value="720">12時間以内</option>
+		    </select>
+		    
+		    <div class="range-group">
+		      <input type="date" id="dateFrom">
+		      <span>～</span>
+		      <input type="date" id="dateTo">
+		    </div>
 
-	    <select id="filterStatus">
-	      <option value="all">すべて</option>
-	      <option value="watched">視聴済み</option>
-	      <option value="unwatched">未視聴</option>
-	    </select>
+		    <div class="btn-group">
+		      <button id="resetAll">条件リセット</button>
+		    </div>
 
-	    <select id="sort">
-	      <option value="new">公開日（新→旧）</option>
-	      <option value="old">公開日（旧→新）</option>
-	      <option value="title_asc">タイトル（昇順）</option>
-	      <option value="title_desc">タイトル（降順）</option>
-	      <option value="long">時間（長い順）</option>
-	      <option value="short">時間（短い順）</option>
-	    </select>
+		  </div>
 
-	    <select id="durationLimit">
-	      <option value="">全時間</option>
-	      <option value="30">30分以内</option>
-	      <option value="60">1時間以内</option>
-	      <option value="120">2時間以内</option>
-	      <option value="180">3時間以内</option>
-	      <option value="240">4時間以内</option>
-	      <option value="300">5時間以内</option>
-	      <option value="360">6時間以内</option>
-	      <option value="420">7時間以内</option>
-	      <option value="480">8時間以内</option>
-	      <option value="540">9時間以内</option>
-	      <option value="600">10時間以内</option>
-	      <option value="660">11時間以内</option>
-	      <option value="720">12時間以内</option>
-	    </select>
-	    
-	    <div class="range-group">
-	      <input type="date" id="dateFrom">
-	      <span>～</span>
-	      <input type="date" id="dateTo">
-	    </div>
+		  <div class="controls-right">   
+		    <button id="toTop">🔼</button>
+		    <button id="toBottom">🔽</button>
+		    <button id="checkAll">表示全☑</button>
+		    <button id="uncheckAll">全☑解除</button>
+		  </div>
+		</div>
 
-	    <div class="btn-group">
-	      <button id="resetAll">条件リセット</button>
-	    </div>
+		<details id="playlistBox">
+		  <summary>再生リスト選択</summary>
+		  <input type="text" id="playlistSearch" placeholder="再生リスト検索">
 
-	  </div>
+		  <button id="playlistAll">全て✔</button>
+		  <button id="playlistClear">全て解除</button>
 
-	  <div class="controls-right">   
-	    <button id="toTop">🔼</button>
-	    <button id="toBottom">🔽</button>
-	    <button id="checkAll">表示全☑</button>
-	    <button id="uncheckAll">全☑解除</button>
-	  </div>
-	</div>
+		  <div id="playlistFilterArea"></div>
+		</details>
 
-	<details id="playlistBox">
-	  <summary>再生リスト選択</summary>
-	  <input type="text" id="playlistSearch" placeholder="再生リスト検索">
+		<div class="list-header">
+		  
+		  <div id="message"></div>
+		  
+		  <p>動画一覧</p>
 
-	  <button id="playlistAll">全て✔</button>
-	  <button id="playlistClear">全て解除</button>
+		  <!-- ラジオボタン -->
+		  <div class="view-toggle">
+		    <label>
+		      <input type="radio" name="view" value="table" checked>
+		      横
+		    </label>
+		  
+		    <label>
+		      <input type="radio" name="view" value="card">
+		      縦
+		    </label>
+		  </div>
+		  
+		  <details class="data-transfer">
+		    <summary>視聴☑データ移行</summary>
+		    <button id="exportBtn">エクスポート</button>
+		    <button id="importBtn">インポート</button>
+		    <input type="file" id="importFile" style="display:none">
+		    <div class="notice">
+		        ※データは端末のブラウザ毎に保存されます
+		    </div>
+		    <button id="helpBtn">❓ヘルプ</button>
+		    <div id="helpModal">
+		      <div class="modal-content">
+		        <h2>ヘルプ</h2>
+		    
+		        <h3>このツールについて</h3>
+		        <p>
+		          博衣こよりの配信アーカイブを視聴管理するための非公式ツールです。
+		        </p>
+		    
+		        <h3>使い方</h3>
+		        <ul>
+		          <li>タイトル検索で絞り込み</li>
+		          <li>再生リストでフィルタ</li>
+		          <li>チェックで視聴管理</li>
+		        </ul>
+		    
+		        <h3>バージョン</h3>
+		        <p>v1.2.0</p>
+		    
+		        <h3>更新履歴</h3>
+		        <ul>
+		          <li>v1.2.0 UI改善・バグ修正</li>
+		          <li>v1.1.0 カード表示追加</li>
+		        </ul>
+		    
+		        <button id="closeHelp">閉じる</button>
+		      </div>
+		    </div>
+		  </details>
+		</div>
+		<div class="table-wrapper">
+		  <table id="list">
+		    <thead>
+		      <tr>
+		        <th>公開日</th>
+		        <th>タイトル</th>
+		        <th>時間</th>
+		        <th>視聴済み</th>
+		        <th>再生リスト</th>
+		      </tr>
+		    </thead>
+		    <tbody></tbody>
+		  </table>  
+		</div>
 
-	  <div id="playlistFilterArea"></div>
-	</details>
-
-	<div class="list-header">
-	  
-	  <div id="message"></div>
-	  
-	  <p>動画一覧</p>
-
-	  <!-- ラジオボタン -->
-	  <div class="view-toggle">
-	    <label>
-	      <input type="radio" name="view" value="table" checked>
-	      横
-	    </label>
-	  
-	    <label>
-	      <input type="radio" name="view" value="card">
-	      縦
-	    </label>
-	  </div>
-	  
-	  <details class="data-transfer">
-	    <summary>視聴☑データ移行</summary>
-	    <button id="exportBtn">エクスポート</button>
-	    <button id="importBtn">インポート</button>
-	    <input type="file" id="importFile" style="display:none">
-	    <div class="notice">
-	        ※データは端末のブラウザ毎に保存されます
-	    </div>
-	    <button id="helpBtn">❓ヘルプ</button>
-	    <div id="helpModal">
-	      <div class="modal-content">
-	        <h2>ヘルプ</h2>
-	    
-	        <h3>このツールについて</h3>
-	        <p>
-	          博衣こよりの配信アーカイブを視聴管理するための非公式ツールです。
-	        </p>
-	    
-	        <h3>使い方</h3>
-	        <ul>
-	          <li>タイトル検索で絞り込み</li>
-	          <li>再生リストでフィルタ</li>
-	          <li>チェックで視聴管理</li>
-	        </ul>
-	    
-	        <h3>バージョン</h3>
-	        <p>v1.2.0</p>
-	    
-	        <h3>更新履歴</h3>
-	        <ul>
-	          <li>v1.2.0 UI改善・バグ修正</li>
-	          <li>v1.1.0 カード表示追加</li>
-	        </ul>
-	    
-	        <button id="closeHelp">閉じる</button>
-	      </div>
-	    </div>
-	  </details>
-	</div>
-	<div class="table-wrapper">
-	  <table id="list">
-	    <thead>
-	      <tr>
-	        <th>公開日</th>
-	        <th>タイトル</th>
-	        <th>時間</th>
-	        <th>視聴済み</th>
-	        <th>再生リスト</th>
-	      </tr>
-	    </thead>
-	    <tbody></tbody>
-	  </table>  
-	</div>
-
-	<!-- JS -->
-	<script src="js/config.js"></script>
-	<script src="js/util.js"></script>
-	<script src="js/render.js"></script>
-	<script src="js/app.js"></script>
+		<!-- JS -->
+		<script src="js/config.js"></script>
+		<script src="js/util.js"></script>
+		<script src="js/render.js"></script>
+		<script src="js/app.js"></script>
 	</main>
 </body>
->
 </html>
