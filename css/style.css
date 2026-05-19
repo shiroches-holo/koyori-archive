@@ -35,6 +35,7 @@ header::before {
 */
 
 /* 光ライン */
+/*
 header::after {
   content: "";
   position: absolute;
@@ -43,6 +44,7 @@ header::after {
   height: 2px;
   background: rgba(255,255,255,0.4);
 }
+*/
 
 h1 {
   font-size: 22px;
